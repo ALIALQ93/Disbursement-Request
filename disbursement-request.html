@@ -542,7 +542,10 @@
         .cert-logo img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
         .print-viewport { width: 100%; }
         @media print {
+            @page { size: A4 portrait; margin: 0; }
+
             * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
             html, body {
                 background: white;
                 padding: 0;
@@ -551,96 +554,166 @@
                 height: 297mm;
                 overflow: hidden;
             }
+
             .print-viewport {
                 width: 210mm;
                 height: 297mm;
+                margin: 0;
+                padding: 0;
                 overflow: hidden;
-                margin: 0 auto;
-                page-break-after: avoid;
-                page-break-inside: avoid;
             }
+
             .page-container {
                 box-shadow: none;
-                margin: 0 auto;
-                width: 210mm;
-                min-height: 0;
-                max-height: none;
-                height: auto;
-                overflow: visible;
-                transform-origin: top center;
+                margin: 0;
+                width: 210mm !important;
+                height: 297mm !important;
+                min-height: 297mm !important;
+                max-height: 297mm !important;
+                transform: none !important;
+                overflow: hidden;
             }
+
+            .page-border { border: 2.5mm solid #1a237e; }
+
             .content-area {
-                height: auto;
-                min-height: 0;
-                padding: 6mm 10mm 3mm !important;
+                height: 100% !important;
+                min-height: 0 !important;
+                padding: 9mm 13mm 6mm !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
                 page-break-inside: avoid;
             }
-            .header { margin-bottom: 2mm !important; padding-bottom: 1mm !important; }
-            .logo-image { width: 95px !important; }
-            .company-name { font-size: 15px !important; letter-spacing: 1.5px !important; margin-bottom: 1mm !important; }
-            .company-subtitle { font-size: 8px !important; margin-bottom: 1mm !important; }
-            .company-name-ar { font-size: 11px !important; padding-top: 1mm !important; }
-            .language-selector, .serial-number, .date-recipient, .subject, .greeting, .closing,
-            .request-intro, .body-text { line-height: 1.45 !important; }
-            .serial-number, .date-recipient { margin: 1.5mm 0 !important; font-size: 11px !important; }
-            .subject { margin: 2mm 0 2.5mm !important; font-size: 13px !important; }
-            .subject-field { font-size: 13px !important; min-width: 90px !important; }
-            .greeting { margin-bottom: 2mm !important; font-size: 11px !important; }
-            .request-table-wrapper { margin: 1.5mm 0 !important; }
+
+            .header { margin-bottom: 3mm !important; padding-bottom: 2mm !important; }
+            .logo-image { width: 125px !important; }
+            .company-name { font-size: 18px !important; letter-spacing: 2px !important; }
+            .company-subtitle { font-size: 9px !important; }
+            .company-name-ar { font-size: 13px !important; }
+
+            .language-selector, .print-button, .print-buttons-container,
+            .no-print, .generate-serial-btn { display: none !important; }
+
+            .serial-number, .date-recipient {
+                margin: 2mm 0 !important;
+                font-size: 13px !important;
+                line-height: 1.6 !important;
+            }
+
+            .subject {
+                margin: 3mm 0 3.5mm !important;
+                font-size: 16px !important;
+            }
+            .subject-field { font-size: 16px !important; }
+
+            .body-text { line-height: 1.65 !important; flex: 1 1 auto; min-height: 0; overflow: hidden; }
+            .greeting { margin-bottom: 3mm !important; font-size: 13px !important; }
+            .closing { margin: 3mm 0 2mm !important; font-size: 13px !important; }
+
+            .request-table-wrapper { margin: 2mm 0 !important; flex: 0 1 auto; }
             .table-scroll { overflow: visible !important; }
-            .request-intro { font-size: 11px !important; margin-bottom: 2mm !important; }
+            .request-intro {
+                font-size: 13px !important;
+                margin-bottom: 2.5mm !important;
+                border: none;
+                background: white;
+            }
+
             .request-table {
-                font-size: 9px !important;
-                page-break-inside: avoid;
+                font-size: 11px !important;
                 width: 100% !important;
                 border-collapse: collapse !important;
+                page-break-inside: avoid;
             }
-            .request-table.is-print-static .col-actions { display: none !important; width: 0 !important; padding: 0 !important; border: none !important; }
-            .request-table th, .request-table td {
-                padding: 3px 5px !important;
+            .request-table.is-print-static .col-actions {
+                display: none !important;
+                width: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+            .request-table th,
+            .request-table td {
+                padding: 4px 6px !important;
                 border: 1px solid #333 !important;
                 vertical-align: middle !important;
+            }
+            .request-table thead { display: table-header-group; }
+            .request-table tfoot { display: table-footer-group; }
+            .request-table thead th {
+                background: #1a237e !important;
+                color: #fff !important;
+                font-size: 11px !important;
+            }
+            .request-table tfoot td {
+                background: #eef1fb !important;
+                font-size: 11px !important;
             }
             .print-desc-cell {
                 text-align: right;
                 word-wrap: break-word;
                 white-space: pre-wrap;
-                line-height: 1.35;
+                line-height: 1.4;
+                font-size: 11px !important;
             }
-            .print-currency-cell { text-align: center; font-weight: 600; white-space: nowrap; }
+            .print-currency-cell {
+                text-align: center;
+                font-weight: 600;
+                font-size: 11px !important;
+            }
             .print-total-cell {
                 text-align: center;
                 direction: ltr;
                 font-weight: 700;
                 color: #1a237e;
-                white-space: nowrap;
+                font-size: 11px !important;
             }
             body[dir="ltr"] .print-desc-cell { text-align: left; }
-            .row-desc { min-height: 18px !important; font-size: 9px !important; }
-            .row-total, .row-currency { font-size: 9px !important; }
-            .request-notes { margin-top: 4px !important; }
-            .request-notes-label { font-size: 10px !important; margin-bottom: 3px !important; }
+
+            .request-notes { margin-top: 3mm !important; }
+            .request-notes-label { font-size: 12px !important; color: #1a237e; margin-bottom: 4px !important; }
             .request-notes-field {
-                min-height: 32px !important;
-                max-height: 36px !important;
-                font-size: 9px !important;
-                line-height: 1.35 !important;
-                padding: 4px 6px !important;
+                min-height: 14mm !important;
+                max-height: 18mm !important;
+                font-size: 11px !important;
+                line-height: 1.45 !important;
+                padding: 5px 7px !important;
+                background: white !important;
+                border: 1px solid #333 !important;
+                resize: none;
+                overflow: hidden;
             }
-            .body-bottom-section { margin-top: 3mm !important; margin-bottom: 2mm !important; }
-            .closing { margin: 2mm 0 1.5mm !important; font-size: 11px !important; }
-            .signatures-row { gap: 3mm !important; }
-            .signature-row { min-width: 62px !important; max-width: 88px !important; }
-            .sig-title { font-size: 9px !important; margin-bottom: 2px !important; }
-            .sig-name { font-size: 9px !important; min-width: 70px !important; padding-top: 2px !important; }
-            .footer { padding-top: 2mm !important; padding-bottom: 1mm !important; margin-top: auto !important; }
-            .footer-content { margin-top: 1mm !important; gap: 4px !important; }
-            .footer-info { font-size: 8px !important; min-width: 0 !important; }
-            .cert-logo { width: 34px !important; height: 34px !important; }
-            .print-button, .print-buttons-container { display: none !important; }
-            .language-selector, .no-print, .generate-serial-btn { display: none !important; }
+
+            .body-bottom-section {
+                margin-top: 4mm !important;
+                margin-bottom: 2mm !important;
+                page-break-inside: avoid;
+            }
+            .signatures-row { gap: 6mm !important; }
+            .signature-row { min-width: 72px !important; max-width: 105px !important; }
+            .sig-title { font-size: 11px !important; }
+            .sig-name {
+                font-size: 11px !important;
+                min-width: 80px !important;
+                border-top: 1px solid #333 !important;
+            }
+            .sig-title.editable-field,
+            .sig-name .editable-field {
+                border: none !important;
+                background: white !important;
+            }
+
+            .footer {
+                padding-top: 3mm !important;
+                padding-bottom: 2mm !important;
+                margin-top: auto !important;
+                flex-shrink: 0;
+            }
+            .footer-content { margin-top: 1.5mm !important; gap: 6px !important; }
+            .footer-info { font-size: 9px !important; line-height: 1.35 !important; }
+            .cert-logo { width: 42px !important; height: 42px !important; }
+
             .editable-field { border-bottom: 1.5px solid #333; background: white; }
-            .request-intro { border: none; background: white; }
             .serial-input,
             input.editable-field,
             input[type="date"],
@@ -648,7 +721,7 @@
                 border: none !important;
                 border-bottom: 1.5px solid #333 !important;
                 background: white !important;
-                box-shadow: none !important;
+                font-size: 13px !important;
             }
             .date-input-screen { display: none !important; }
             .date-print-display {
@@ -657,56 +730,22 @@
                 padding: 0 6px 2px;
                 min-width: 110px;
                 direction: ltr;
+                font-size: 13px !important;
             }
-            .request-table thead { display: table-header-group; }
-            .request-table tfoot { display: table-footer-group; }
-            .request-table thead th {
-                background: #1a237e !important;
-                color: #fff !important;
-            }
-            .request-table tfoot td { background: #eef1fb !important; }
-            .request-table .row-desc,
-            .request-table .row-total,
-            .request-table .row-currency {
-                border: none !important;
-                background: white !important;
-            }
-            .request-table .row-desc { resize: none; overflow: hidden; }
-            .request-table tbody tr:nth-child(even) { background: white !important; }
-            .request-notes-label { color: #1a237e; }
-            .request-notes-field {
-                background: white !important;
-                border: 1.5px solid #333 !important;
-                resize: none;
-            }
-            .sig-title.editable-field,
-            .sig-name .editable-field {
-                border: none !important;
-                background: white !important;
-            }
-            .sig-name { border-top: 1px solid #333 !important; }
-            .page-border { border: 2mm solid #1a237e; }
-            .body-bottom-section, .signature-section { page-break-inside: avoid; }
-            .no-header-footer .header, .no-header-footer .footer { display: none !important; }
+
+            .no-header-footer .header,
+            .no-header-footer .footer { display: none !important; }
             .no-header-footer .content-area {
-                padding: 12mm 14mm 8mm !important;
-                min-height: 0;
-                justify-content: flex-start;
+                padding: 14mm 16mm 10mm !important;
+                justify-content: flex-start !important;
             }
-            .no-header-footer .body-text { margin: 0; }
-            .no-header-footer .serial-number { margin-bottom: 3mm; text-align: right; }
-            .no-header-footer .date-recipient { margin: 2mm 0 3mm; text-align: right; }
-            .no-header-footer .subject { margin: 3mm 0 3mm; }
-            .no-header-footer .greeting { margin-bottom: 3mm; text-align: right; }
-            .no-header-footer .request-table-wrapper { margin: 2mm 0; text-align: right; }
+            .no-header-footer .body-text { margin: 0; flex: 1 1 auto; }
             .no-header-footer .body-bottom-section {
-                margin-top: 4mm;
+                margin-top: auto;
                 display: flex;
                 flex-direction: column;
                 align-items: flex-end;
             }
-            .no-header-footer .closing { margin: 3mm 0 2mm; text-align: right; }
-            .no-header-footer .signature-section { margin-top: 3mm; text-align: right; }
             body[dir="ltr"] .no-header-footer .serial-number,
             body[dir="ltr"] .no-header-footer .date-recipient,
             body[dir="ltr"] .no-header-footer .greeting,
@@ -1524,48 +1563,17 @@
 
         function resetPrintScale() {
             const page = document.querySelector('.page-container');
-            const viewport = document.querySelector('.print-viewport');
             if (page) {
                 page.style.transform = '';
                 page.style.transformOrigin = '';
-                page.style.width = '';
-            }
-            if (viewport) {
-                viewport.style.height = '';
-                viewport.style.overflow = '';
             }
             restorePrintFields();
-        }
-
-        function fitPrintToA4() {
-            const viewport = document.querySelector('.print-viewport');
-            const page = document.querySelector('.page-container');
-            if (!viewport || !page) return;
-
-            compactPrintFields();
-            page.style.transform = 'none';
-            page.style.width = '210mm';
-
-            const maxHeight = viewport.clientHeight || viewport.offsetHeight || Math.round(297 * (96 / 25.4));
-            const contentHeight = page.scrollHeight;
-            let scale = 1;
-
-            if (contentHeight > maxHeight && contentHeight > 0) {
-                scale = maxHeight / contentHeight;
-                scale = Math.max(0.45, Math.min(1, scale));
-            }
-
-            page.style.transformOrigin = 'top center';
-            page.style.transform = 'scale(' + scale + ')';
-            viewport.style.height = '297mm';
-            viewport.style.overflow = 'hidden';
         }
 
         window.addEventListener('beforeprint', function() {
             syncPrintDateDisplay();
             prepareTableForPrint();
             compactPrintFields();
-            fitPrintToA4();
         });
         window.addEventListener('afterprint', function() {
             restoreTableAfterPrint();
