@@ -266,6 +266,7 @@
             font-size: 14px;
             table-layout: fixed;
         }
+        .request-table.is-print-static .col-actions { display: none !important; }
         .request-table th,
         .request-table td {
             border: 1.5px solid #333;
@@ -539,23 +540,103 @@
             flex-shrink: 0;
         }
         .cert-logo img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+        .print-viewport { width: 100%; }
         @media print {
             * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            html, body { background: white; padding: 0; margin: 0; }
+            html, body {
+                background: white;
+                padding: 0;
+                margin: 0;
+                width: 210mm;
+                height: 297mm;
+                overflow: hidden;
+            }
+            .print-viewport {
+                width: 210mm;
+                height: 297mm;
+                overflow: hidden;
+                margin: 0 auto;
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
             .page-container {
                 box-shadow: none;
                 margin: 0 auto;
                 width: 210mm;
-                min-height: 297mm;
+                min-height: 0;
                 max-height: none;
                 height: auto;
                 overflow: visible;
+                transform-origin: top center;
             }
             .content-area {
                 height: auto;
-                min-height: calc(297mm - 20mm);
-                page-break-inside: auto;
+                min-height: 0;
+                padding: 6mm 10mm 3mm !important;
+                page-break-inside: avoid;
             }
+            .header { margin-bottom: 2mm !important; padding-bottom: 1mm !important; }
+            .logo-image { width: 95px !important; }
+            .company-name { font-size: 15px !important; letter-spacing: 1.5px !important; margin-bottom: 1mm !important; }
+            .company-subtitle { font-size: 8px !important; margin-bottom: 1mm !important; }
+            .company-name-ar { font-size: 11px !important; padding-top: 1mm !important; }
+            .language-selector, .serial-number, .date-recipient, .subject, .greeting, .closing,
+            .request-intro, .body-text { line-height: 1.45 !important; }
+            .serial-number, .date-recipient { margin: 1.5mm 0 !important; font-size: 11px !important; }
+            .subject { margin: 2mm 0 2.5mm !important; font-size: 13px !important; }
+            .subject-field { font-size: 13px !important; min-width: 90px !important; }
+            .greeting { margin-bottom: 2mm !important; font-size: 11px !important; }
+            .request-table-wrapper { margin: 1.5mm 0 !important; }
+            .table-scroll { overflow: visible !important; }
+            .request-intro { font-size: 11px !important; margin-bottom: 2mm !important; }
+            .request-table {
+                font-size: 9px !important;
+                page-break-inside: avoid;
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+            .request-table.is-print-static .col-actions { display: none !important; width: 0 !important; padding: 0 !important; border: none !important; }
+            .request-table th, .request-table td {
+                padding: 3px 5px !important;
+                border: 1px solid #333 !important;
+                vertical-align: middle !important;
+            }
+            .print-desc-cell {
+                text-align: right;
+                word-wrap: break-word;
+                white-space: pre-wrap;
+                line-height: 1.35;
+            }
+            .print-currency-cell { text-align: center; font-weight: 600; white-space: nowrap; }
+            .print-total-cell {
+                text-align: center;
+                direction: ltr;
+                font-weight: 700;
+                color: #1a237e;
+                white-space: nowrap;
+            }
+            body[dir="ltr"] .print-desc-cell { text-align: left; }
+            .row-desc { min-height: 18px !important; font-size: 9px !important; }
+            .row-total, .row-currency { font-size: 9px !important; }
+            .request-notes { margin-top: 4px !important; }
+            .request-notes-label { font-size: 10px !important; margin-bottom: 3px !important; }
+            .request-notes-field {
+                min-height: 32px !important;
+                max-height: 36px !important;
+                font-size: 9px !important;
+                line-height: 1.35 !important;
+                padding: 4px 6px !important;
+            }
+            .body-bottom-section { margin-top: 3mm !important; margin-bottom: 2mm !important; }
+            .closing { margin: 2mm 0 1.5mm !important; font-size: 11px !important; }
+            .signatures-row { gap: 3mm !important; }
+            .signature-row { min-width: 62px !important; max-width: 88px !important; }
+            .sig-title { font-size: 9px !important; margin-bottom: 2px !important; }
+            .sig-name { font-size: 9px !important; min-width: 70px !important; padding-top: 2px !important; }
+            .footer { padding-top: 2mm !important; padding-bottom: 1mm !important; margin-top: auto !important; }
+            .footer-content { margin-top: 1mm !important; gap: 4px !important; }
+            .footer-info { font-size: 8px !important; min-width: 0 !important; }
+            .cert-logo { width: 34px !important; height: 34px !important; }
             .print-button, .print-buttons-container { display: none !important; }
             .language-selector, .no-print, .generate-serial-btn { display: none !important; }
             .editable-field { border-bottom: 1.5px solid #333; background: white; }
@@ -577,7 +658,6 @@
                 min-width: 110px;
                 direction: ltr;
             }
-            .request-table { page-break-inside: auto; }
             .request-table thead { display: table-header-group; }
             .request-table tfoot { display: table-footer-group; }
             .request-table thead th {
@@ -609,24 +689,24 @@
             .body-bottom-section, .signature-section { page-break-inside: avoid; }
             .no-header-footer .header, .no-header-footer .footer { display: none !important; }
             .no-header-footer .content-area {
-                padding: 25mm 20mm;
-                min-height: 297mm;
+                padding: 12mm 14mm 8mm !important;
+                min-height: 0;
                 justify-content: flex-start;
             }
             .no-header-footer .body-text { margin: 0; }
-            .no-header-footer .serial-number { margin-bottom: 5mm; text-align: right; }
-            .no-header-footer .date-recipient { margin: 4mm 0 5mm; text-align: right; }
-            .no-header-footer .subject { margin: 5mm 0 6mm; }
-            .no-header-footer .greeting { margin-bottom: 5mm; text-align: right; }
-            .no-header-footer .request-table-wrapper { margin: 4mm 0; text-align: right; }
+            .no-header-footer .serial-number { margin-bottom: 3mm; text-align: right; }
+            .no-header-footer .date-recipient { margin: 2mm 0 3mm; text-align: right; }
+            .no-header-footer .subject { margin: 3mm 0 3mm; }
+            .no-header-footer .greeting { margin-bottom: 3mm; text-align: right; }
+            .no-header-footer .request-table-wrapper { margin: 2mm 0; text-align: right; }
             .no-header-footer .body-bottom-section {
-                margin-top: 8mm;
+                margin-top: 4mm;
                 display: flex;
                 flex-direction: column;
                 align-items: flex-end;
             }
-            .no-header-footer .closing { margin: 5mm 0 4mm; text-align: right; }
-            .no-header-footer .signature-section { margin-top: 5mm; text-align: right; }
+            .no-header-footer .closing { margin: 3mm 0 2mm; text-align: right; }
+            .no-header-footer .signature-section { margin-top: 3mm; text-align: right; }
             body[dir="ltr"] .no-header-footer .serial-number,
             body[dir="ltr"] .no-header-footer .date-recipient,
             body[dir="ltr"] .no-header-footer .greeting,
@@ -669,6 +749,7 @@
     </style>
 </head>
 <body>
+    <div class="print-viewport">
     <div class="page-container">
         <div class="page-border"></div>
         <div class="content-area">
@@ -780,6 +861,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <div class="print-buttons-container">
@@ -956,9 +1038,115 @@
                     '<td colspan="2" class="total-label">' + labels.totalLabel + '</td>' +
                     '<td class="total-currency">' + currency + '</td>' +
                     '<td class="total-amount">' + formatAmount(totals[currency]) + '</td>' +
-                    '<td class="no-print"></td>';
+                    '<td class="col-actions no-print"></td>';
                 foot.appendChild(tr);
             });
+        }
+
+        function captureTableData() {
+            const introEl = document.getElementById('requestIntro');
+            const notesEl = document.getElementById('requestNotes');
+            const rows = [];
+            document.querySelectorAll('#requestTableBody tr').forEach(function(row) {
+                const descEl = row.querySelector('.row-desc');
+                const currencyEl = row.querySelector('.row-currency');
+                const totalEl = row.querySelector('.row-total');
+                let currency = '$';
+                if (currencyEl) {
+                    currency = currencyEl.value || currencyEl.textContent.trim() || '$';
+                }
+                rows.push({
+                    desc: descEl ? (descEl.value != null ? descEl.value : descEl.textContent) : '',
+                    currency: currency,
+                    total: totalEl ? (totalEl.value != null ? totalEl.value : totalEl.textContent) : ''
+                });
+            });
+            return {
+                intro: introEl ? introEl.textContent : '',
+                notes: notesEl ? notesEl.value : '',
+                rows: rows
+            };
+        }
+
+        function getCurrencyLabel(code) {
+            const options = translations[currentLanguage].currencyOptions;
+            return options[code] || code;
+        }
+
+        function renderPrintTableFooter(rows) {
+            const foot = document.getElementById('requestTableFoot');
+            if (!foot) return;
+            foot.innerHTML = '';
+
+            const labels = getTableLabels();
+            const totals = {};
+            rows.forEach(function(row) {
+                const amount = parseAmount(row.total);
+                if (amount > 0) {
+                    const currency = row.currency || '$';
+                    totals[currency] = (totals[currency] || 0) + amount;
+                }
+            });
+
+            const currencies = Object.keys(totals).sort(function(a, b) {
+                if (a === '$') return -1;
+                if (b === '$') return 1;
+                return a.localeCompare(b);
+            });
+
+            if (!currencies.length) {
+                foot.innerHTML = '<tr><td colspan="5" class="total-label">' + labels.noTotals + '</td></tr>';
+                return;
+            }
+
+            currencies.forEach(function(currency) {
+                foot.innerHTML +=
+                    '<tr>' +
+                    '<td colspan="2" class="total-label">' + labels.totalLabel + '</td>' +
+                    '<td class="total-currency">' + escapeHtml(currency) + '</td>' +
+                    '<td class="total-amount">' + formatAmount(totals[currency]) + '</td>' +
+                    '<td class="col-actions no-print"></td>' +
+                    '</tr>';
+            });
+        }
+
+        let tablePrintBackup = null;
+
+        function prepareTableForPrint() {
+            const table = document.getElementById('requestTable');
+            tablePrintBackup = captureTableData();
+            saveTableData();
+
+            const tbody = document.getElementById('requestTableBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            tablePrintBackup.rows.forEach(function(rowData, index) {
+                const tr = document.createElement('tr');
+                const descText = (rowData.desc || '').trim() || '—';
+                const totalText = rowData.total ? formatAmount(parseAmount(rowData.total)) : '—';
+                tr.innerHTML =
+                    '<td class="col-num">' + (index + 1) + '</td>' +
+                    '<td class="print-desc-cell">' + escapeHtml(descText) + '</td>' +
+                    '<td class="print-currency-cell">' + escapeHtml(getCurrencyLabel(rowData.currency || '$')) + '</td>' +
+                    '<td class="print-total-cell">' + escapeHtml(totalText) + '</td>' +
+                    '<td class="col-actions no-print"></td>';
+                tbody.appendChild(tr);
+            });
+
+            if (table) table.classList.add('is-print-static');
+            renderPrintTableFooter(tablePrintBackup.rows);
+        }
+
+        function restoreTableAfterPrint() {
+            const table = document.getElementById('requestTable');
+            if (table) table.classList.remove('is-print-static');
+            if (tablePrintBackup) {
+                renderRequestTable(tablePrintBackup);
+                tablePrintBackup = null;
+            } else {
+                renderRequestTable(loadTableData());
+            }
         }
 
         function bindNumericField(el, row) {
@@ -1324,10 +1512,70 @@
             }
         }
 
+        function compactPrintFields() {
+            const notes = document.getElementById('requestNotes');
+            if (notes) notes.setAttribute('rows', '2');
+        }
+
+        function restorePrintFields() {
+            const notes = document.getElementById('requestNotes');
+            if (notes) notes.setAttribute('rows', '3');
+        }
+
+        function resetPrintScale() {
+            const page = document.querySelector('.page-container');
+            const viewport = document.querySelector('.print-viewport');
+            if (page) {
+                page.style.transform = '';
+                page.style.transformOrigin = '';
+                page.style.width = '';
+            }
+            if (viewport) {
+                viewport.style.height = '';
+                viewport.style.overflow = '';
+            }
+            restorePrintFields();
+        }
+
+        function fitPrintToA4() {
+            const viewport = document.querySelector('.print-viewport');
+            const page = document.querySelector('.page-container');
+            if (!viewport || !page) return;
+
+            compactPrintFields();
+            page.style.transform = 'none';
+            page.style.width = '210mm';
+
+            const maxHeight = viewport.clientHeight || viewport.offsetHeight || Math.round(297 * (96 / 25.4));
+            const contentHeight = page.scrollHeight;
+            let scale = 1;
+
+            if (contentHeight > maxHeight && contentHeight > 0) {
+                scale = maxHeight / contentHeight;
+                scale = Math.max(0.45, Math.min(1, scale));
+            }
+
+            page.style.transformOrigin = 'top center';
+            page.style.transform = 'scale(' + scale + ')';
+            viewport.style.height = '297mm';
+            viewport.style.overflow = 'hidden';
+        }
+
+        window.addEventListener('beforeprint', function() {
+            syncPrintDateDisplay();
+            prepareTableForPrint();
+            compactPrintFields();
+            fitPrintToA4();
+        });
+        window.addEventListener('afterprint', function() {
+            restoreTableAfterPrint();
+            resetPrintScale();
+            restoreHeaderFooter();
+        });
+
         function printWithHeaderFooter() {
             const pageContainer = document.querySelector('.page-container');
             if (pageContainer) {
-                syncPrintDateDisplay();
                 pageContainer.classList.remove('no-header-footer');
                 window.print();
             }
@@ -1336,10 +1584,7 @@
         function printWithoutHeaderFooter() {
             const pageContainer = document.querySelector('.page-container');
             if (pageContainer) {
-                syncPrintDateDisplay();
                 pageContainer.classList.add('no-header-footer');
-                window.removeEventListener('afterprint', restoreHeaderFooter);
-                window.addEventListener('afterprint', restoreHeaderFooter);
                 window.print();
             }
         }
@@ -1347,7 +1592,6 @@
         function restoreHeaderFooter() {
             const pageContainer = document.querySelector('.page-container');
             if (pageContainer) pageContainer.classList.remove('no-header-footer');
-            window.removeEventListener('afterprint', restoreHeaderFooter);
         }
     </script>
 </body>
