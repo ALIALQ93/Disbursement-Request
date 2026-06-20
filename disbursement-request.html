@@ -179,7 +179,7 @@
         body[dir="ltr"] .request-table tfoot .total-amount { text-align: right; }
         body[dir="ltr"] .subject { text-align: center; }
         body[dir="ltr"] .signature-section { align-items: flex-start; }
-        body[dir="ltr"] .signatures-row { justify-content: flex-start; margin-right: 0; margin-left: 0; }
+        body[dir="ltr"] .signatures-row { justify-content: space-between; margin-right: 0; margin-left: 0; }
         body[dir="ltr"] .request-intro { text-align: left; }
         body[dir="ltr"] .request-table .row-desc { text-align: left; }
         body[dir="ltr"] .request-table tfoot .total-label { text-align: left; }
@@ -243,7 +243,7 @@
             flex: 0 1 auto;
             font-family: 'Arial', 'Tahoma', sans-serif;
         }
-        .body-bottom-section { margin-top: 3mm; margin-bottom: 6mm; flex: 0 0 auto; page-break-inside: avoid; }
+        .body-bottom-section { margin-top: 3mm; margin-bottom: 6mm; flex: 0 0 auto; page-break-inside: avoid; width: 100%; }
         .greeting { margin-bottom: 3mm; font-size: 15px; font-family: 'Arial', 'Tahoma', sans-serif; }
         .request-table-wrapper {
             width: 100%;
@@ -432,9 +432,10 @@
         .signatures-row {
             display: flex;
             flex-direction: row;
-            justify-content: flex-end;
-            gap: 10mm;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 0;
+            flex-wrap: nowrap;
             margin-right: 0;
             width: 100%;
         }
@@ -443,9 +444,11 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            min-width: 80px;
             flex: 1 1 0;
-            max-width: 120px;
+            min-width: 0;
+            max-width: none;
+            padding: 0 2mm;
+            box-sizing: border-box;
         }
         .sig-title {
             font-size: 14px;
@@ -461,7 +464,9 @@
             border-radius: 3px;
             cursor: text;
             transition: all 0.2s;
-            min-width: 80px;
+            min-width: 0;
+            max-width: 100%;
+            word-wrap: break-word;
         }
         .sig-title.editable-field:hover {
             background: #f0f0f0;
@@ -478,18 +483,21 @@
             font-family: 'Arial', 'Tahoma', sans-serif;
             border-top: 1px solid #333;
             padding-top: 3px;
-            min-width: 100px;
+            width: 100%;
             min-height: 1.4em;
+            box-sizing: border-box;
         }
         .sig-name .editable-field {
-            display: inline-block;
-            min-width: 100px;
+            display: block;
+            width: 100%;
+            min-width: 0;
             padding: 2px 5px;
             border: 1px dashed #1a237e;
             border-radius: 3px;
             background: #f9f9f9;
             cursor: text;
             transition: all 0.2s;
+            box-sizing: border-box;
         }
         .sig-name .editable-field:hover {
             background: #fff;
@@ -705,12 +713,21 @@
                 margin-bottom: 2mm !important;
                 page-break-inside: avoid;
             }
-            .signatures-row { gap: 6mm !important; }
-            .signature-row { min-width: 72px !important; max-width: 105px !important; }
+            .signatures-row {
+                justify-content: space-between !important;
+                gap: 0 !important;
+                width: 100% !important;
+            }
+            .signature-row {
+                flex: 1 1 0 !important;
+                min-width: 0 !important;
+                max-width: none !important;
+                padding: 0 2.5mm !important;
+            }
             .sig-title { font-size: 11px !important; }
             .sig-name {
                 font-size: 11px !important;
-                min-width: 80px !important;
+                width: 100% !important;
                 border-top: 1px solid #333 !important;
             }
             .sig-title.editable-field,
@@ -760,15 +777,18 @@
                 margin-top: auto;
                 display: flex;
                 flex-direction: column;
-                align-items: flex-end;
+                align-items: stretch;
+                width: 100%;
             }
             body[dir="ltr"] .no-header-footer .serial-number,
             body[dir="ltr"] .no-header-footer .date-recipient,
             body[dir="ltr"] .no-header-footer .greeting,
             body[dir="ltr"] .no-header-footer .request-table-wrapper,
-            body[dir="ltr"] .no-header-footer .closing,
-            body[dir="ltr"] .no-header-footer .signature-section,
-            body[dir="ltr"] .no-header-footer .body-bottom-section { text-align: left; align-items: flex-start; }
+            body[dir="ltr"] .no-header-footer .closing { text-align: left; }
+            body[dir="ltr"] .no-header-footer .body-bottom-section {
+                text-align: left;
+                align-items: stretch;
+            }
         }
         .print-buttons-container {
             position: fixed;
@@ -881,19 +901,19 @@
                     <div class="signature-section signatures-row">
                         <div class="signature-row">
                             <div class="sig-title editable-field" contenteditable="true" id="sigTitleApplicant">مقدم الطلب</div>
-                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigApplicant" style="min-width: 100px;"></span></div>
+                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigApplicant"></span></div>
                         </div>
                         <div class="signature-row">
                             <div class="sig-title editable-field" contenteditable="true" id="sigTitleAccounts">الحسابات</div>
-                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigAccounts" style="min-width: 100px;"></span></div>
+                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigAccounts"></span></div>
                         </div>
                         <div class="signature-row">
                             <div class="sig-title editable-field" contenteditable="true" id="sigTitleManagement">الإدارة</div>
-                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigManagement" style="min-width: 100px;"></span></div>
+                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigManagement"></span></div>
                         </div>
                         <div class="signature-row">
                             <div class="sig-title editable-field" contenteditable="true" id="sigTitleDisbursementOrder">أمر الصرف</div>
-                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigDisbursementOrder" style="min-width: 100px;"></span></div>
+                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigDisbursementOrder"></span></div>
                         </div>
                     </div>
                 </div>
