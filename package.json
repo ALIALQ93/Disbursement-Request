@@ -1,0 +1,12 @@
+{
+  "name": "disbursement-request-pdf",
+  "version": "1.0.0",
+  "description": "إنشاء ملف PDF طلب صرف قابل للتحرير",
+  "main": "create-pdf-request.js",
+  "scripts": {
+    "create-pdf": "node create-pdf-request.js"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  }
+}

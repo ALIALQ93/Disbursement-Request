@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء PDF طلب صرف قابل للتحرير</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', 'Tahoma', sans-serif;
+            direction: rtl;
+            text-align: right;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #1a237e;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .info-box {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-right: 4px solid #1a237e;
+        }
+        .info-box p {
+            margin: 8px 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .btn {
+            background: #1a237e;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .btn:hover {
+            background: #283593;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 إنشاء PDF طلب صرف قابل للتحرير</h1>
+        <p class="subtitle">سيتم إنشاء ملف PDF يحتوي على جميع الحقول القابلة للتحرير</p>
+        
+        <div class="info-box">
+            <p><strong>ملاحظات:</strong></p>
+            <p>• الملف PDF سيكون جاهزاً للطباعة والتحرير</p>
+            <p>• يمكنك ملء الحقول في أي قارئ PDF (مثل Adobe Reader)</p>
+            <p>• يحتاج اتصال بالإنترنت لتحميل مكتبة pdf-lib</p>
+        </div>
+
+        <button id="btnCreate" class="btn" onclick="createFillablePDF()">
+            🚀 إنشاء وتحميل PDF
+        </button>
+
+        <div id="status" class="status"></div>
+    </div>
+
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script>
+        async function createFillablePDF() {
+            const btn = document.getElementById('btnCreate');
+            const status = document.getElementById('status');
+            
+            if (typeof PDFLib === 'undefined') {
+                status.className = 'status error';
+                status.textContent = '❌ خطأ: لم يتم تحميل مكتبة pdf-lib. تأكد من الاتصال بالإنترنت.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ جاري الإنشاء...';
+            status.className = 'status info';
+            status.textContent = 'جاري إنشاء ملف PDF...';
+
+            try {
+                const { PDFDocument, StandardFonts } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                const page = pdfDoc.addPage([595.28, 841.89]); // A4 size
+                const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+                const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+                const form = pdfDoc.getForm();
+                
+                const margin = 45;
+                const lineH = 24;
+                let y = 841.89 - margin;
+
+                function drawLabel(text, x, size) {
+                    page.drawText(text, { x: x, y: y - 14, size: size || 11, font: font });
+                }
+                function nextLine() { y -= lineH; }
+
+                // Header
+                page.drawText('AL ALBAB COMPANY', { x: margin, y: y, size: 16, font: fontBold });
+                nextLine();
+                page.drawText('FOR GENERAL CONTRACTING LTD, IRAQ', { x: margin, y: y, size: 9, font: font });
+                nextLine();
+                page.drawText('Disbursement Request / طلب صرف', { x: margin, y: y, size: 12, font: font });
+                nextLine(); nextLine();
+
+                // Serial Number
+                drawLabel('Serial Number / الرقم التسلسلي:', margin);
+                const fSerial = form.createTextField('serialNumber');
+                fSerial.addToPage(page, { x: 320, y: y - 18, width: 220, height: 18, font: font });
+                nextLine();
+
+                // Date
+                drawLabel('Date / التاريخ:', margin);
+                const fDate = form.createTextField('date');
+                fDate.addToPage(page, { x: 320, y: y - 18, width: 220, height: 18, font: font });
+                nextLine();
+
+                // To
+                drawLabel('To / الى:', margin);
+                const fTo = form.createTextField('bankName');
+                fTo.setText('Accounts Department');
+                fTo.addToPage(page, { x: 320, y: y - 18, width: 220, height: 18, font: font });
+                nextLine();
+
+                // Subject
+                drawLabel('Subject / الموضوع:', margin);
+                const fSubject = form.createTextField('subjectType');
+                fSubject.setText('Disbursement Request');
+                fSubject.addToPage(page, { x: 320, y: y - 18, width: 220, height: 18, font: font });
+                nextLine(); nextLine();
+
+                // Body text
+                page.drawText('We request disbursement of an amount of (', { x: margin, y: y, size: 10, font: font });
+                nextLine();
+                
+                // Amount
+                drawLabel('Amount / المبلغ:', margin);
+                const fAmount = form.createTextField('amount');
+                fAmount.addToPage(page, { x: 320, y: y - 18, width: 120, height: 18, font: font });
+                
+                // Currency dropdown
+                const dropCurrency = form.createDropdown('currency');
+                dropCurrency.addOptions(['$', 'IQD']);
+                dropCurrency.select(0);
+                dropCurrency.addToPage(page, { x: 448, y: y - 18, width: 55, height: 18, font: font });
+                nextLine();
+
+                // Amount in words
+                drawLabel('Amount in words / المبلغ بالحروف:', margin);
+                const fAmountWords = form.createTextField('amountWords');
+                fAmountWords.addToPage(page, { x: margin, y: y - 18, width: 515, height: 18, font: font });
+                nextLine();
+
+                // Beneficiary
+                drawLabel('Beneficiary / المستفيد:', margin);
+                const fBeneficiary = form.createTextField('beneficiaryName');
+                fBeneficiary.addToPage(page, { x: 320, y: y - 18, width: 220, height: 18, font: font });
+                nextLine();
+
+                // Reason (multiline)
+                drawLabel('Reason / سبب الصرف:', margin);
+                const fReason = form.createTextField('reason');
+                fReason.enableMultiline();
+                fReason.addToPage(page, { x: margin, y: y - 42, width: 515, height: 40, font: font });
+                y -= 50;
+                nextLine();
+
+                // Closing
+                page.drawText('Best Regards,', { x: margin, y: y, size: 11, font: font });
+                nextLine(); nextLine();
+
+                // Signatures
+                const sigY = y;
+                const sigW = 140;
+                const sigGap = 30;
+                
+                page.drawText('Accounts', { x: margin, y: sigY, size: 10, font: fontBold });
+                const fSig1 = form.createTextField('sigAccounts');
+                fSig1.addToPage(page, { x: margin, y: sigY - 22, width: sigW, height: 18, font: font });
+                
+                page.drawText('Supervising Engineer', { x: margin + sigW + sigGap, y: sigY, size: 10, font: fontBold });
+                const fSig2 = form.createTextField('sigEngineer');
+                fSig2.addToPage(page, { x: margin + sigW + sigGap, y: sigY - 22, width: sigW, height: 18, font: font });
+                
+                page.drawText('Project Manager', { x: margin + (sigW + sigGap) * 2, y: sigY, size: 10, font: fontBold });
+                const fSig3 = form.createTextField('sigProjectManager');
+                fSig3.addToPage(page, { x: margin + (sigW + sigGap) * 2, y: sigY - 22, width: sigW, height: 18, font: font });
+
+                // Footer
+                y = 60;
+                page.drawLine({
+                    start: { x: margin, y: y },
+                    end: { x: 550, y: y },
+                    thickness: 0.5,
+                    color: { r: 0, g: 0, b: 0 }
+                });
+                y -= 15;
+                page.drawText('AL-Karada Dakhel, Baghdad, Iraq.', { x: margin, y: y, size: 8, font: font });
+                y -= 10;
+                page.drawText('Email: info@albab.com.iq / Website: www.albab.com.iq', { x: margin, y: y, size: 8, font: font });
+                y -= 10;
+                page.drawText('Tel: +964 7816 896 331 / +964 7834 978 803', { x: margin, y: y, size: 8, font: font });
+
+                // Update field appearances
+                form.updateFieldAppearances(font);
+
+                // Save PDF
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'طلب_صرف_Disbursement_Request.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                status.className = 'status success';
+                status.textContent = '✅ تم إنشاء وتحميل ملف PDF بنجاح!';
+                btn.textContent = '✅ تم التحميل - إنشاء جديد';
+                
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.textContent = '🚀 إنشاء وتحميل PDF';
+                    status.className = 'status';
+                    status.textContent = '';
+                }, 3000);
+
+            } catch (err) {
+                console.error(err);
+                status.className = 'status error';
+                status.textContent = '❌ حدث خطأ: ' + (err.message || err);
+                btn.disabled = false;
+                btn.textContent = '🚀 إنشاء وتحميل PDF';
+            }
+        }
+
+        // Check if PDFLib is loaded
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (typeof PDFLib === 'undefined') {
+                    const status = document.getElementById('status');
+                    status.className = 'status error';
+                    status.textContent = '⚠️ تحذير: لم يتم تحميل مكتبة pdf-lib. تأكد من الاتصال بالإنترنت.';
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
