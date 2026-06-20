@@ -259,14 +259,19 @@
             text-align: right;
             min-height: 1.5em;
         }
-        .table-scroll { overflow-x: auto; }
+        .request-table-wrapper { width: 100%; }
+        .table-scroll { overflow-x: auto; width: 100%; }
         .request-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
             table-layout: fixed;
         }
-        .request-table.is-print-static .col-actions { display: none !important; }
+        .request-table.is-print-static { table-layout: fixed; width: 100%; }
+        .request-table.is-print-static .col-num { width: 8%; }
+        .request-table.is-print-static .col-desc { width: 54%; }
+        .request-table.is-print-static .col-currency { width: 16%; }
+        .request-table.is-print-static .col-total { width: 22%; }
         .request-table th,
         .request-table td {
             border: 1.5px solid #333;
@@ -611,27 +616,38 @@
             .greeting { margin-bottom: 3mm !important; font-size: 13px !important; }
             .closing { margin: 3mm 0 2mm !important; font-size: 13px !important; }
 
-            .request-table-wrapper { margin: 2mm 0 !important; flex: 0 1 auto; }
-            .table-scroll { overflow: visible !important; }
+            .request-table-wrapper {
+                margin: 2mm 0 !important;
+                flex: 0 1 auto;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .table-scroll {
+                overflow: visible !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                display: block !important;
+            }
             .request-intro {
                 font-size: 13px !important;
                 margin-bottom: 2.5mm !important;
                 border: none;
                 background: white;
+                width: 100% !important;
             }
 
             .request-table {
                 font-size: 11px !important;
                 width: 100% !important;
+                max-width: 100% !important;
                 border-collapse: collapse !important;
+                table-layout: fixed !important;
                 page-break-inside: avoid;
             }
-            .request-table.is-print-static .col-actions {
-                display: none !important;
-                width: 0 !important;
-                padding: 0 !important;
-                border: none !important;
-            }
+            .request-table.is-print-static .col-num { width: 8% !important; }
+            .request-table.is-print-static .col-desc { width: 54% !important; }
+            .request-table.is-print-static .col-currency { width: 16% !important; }
+            .request-table.is-print-static .col-total { width: 22% !important; }
             .request-table th,
             .request-table td {
                 padding: 4px 6px !important;
@@ -1134,7 +1150,7 @@
             });
 
             if (!currencies.length) {
-                foot.innerHTML = '<tr><td colspan="5" class="total-label">' + labels.noTotals + '</td></tr>';
+                foot.innerHTML = '<tr><td colspan="4" class="total-label">' + labels.noTotals + '</td></tr>';
                 return;
             }
 
@@ -1144,17 +1160,23 @@
                     '<td colspan="2" class="total-label">' + labels.totalLabel + '</td>' +
                     '<td class="total-currency">' + escapeHtml(currency) + '</td>' +
                     '<td class="total-amount">' + formatAmount(totals[currency]) + '</td>' +
-                    '<td class="col-actions no-print"></td>' +
                     '</tr>';
             });
         }
 
         let tablePrintBackup = null;
+        let printActionHeaderBackup = null;
 
         function prepareTableForPrint() {
             const table = document.getElementById('requestTable');
             tablePrintBackup = captureTableData();
             saveTableData();
+
+            const actionTh = document.querySelector('#requestTable thead .col-actions');
+            if (actionTh) {
+                printActionHeaderBackup = actionTh;
+                actionTh.remove();
+            }
 
             const tbody = document.getElementById('requestTableBody');
             if (!tbody) return;
@@ -1166,10 +1188,9 @@
                 const totalText = rowData.total ? formatAmount(parseAmount(rowData.total)) : '—';
                 tr.innerHTML =
                     '<td class="col-num">' + (index + 1) + '</td>' +
-                    '<td class="print-desc-cell">' + escapeHtml(descText) + '</td>' +
-                    '<td class="print-currency-cell">' + escapeHtml(getCurrencyLabel(rowData.currency || '$')) + '</td>' +
-                    '<td class="print-total-cell">' + escapeHtml(totalText) + '</td>' +
-                    '<td class="col-actions no-print"></td>';
+                    '<td class="print-desc-cell col-desc">' + escapeHtml(descText) + '</td>' +
+                    '<td class="print-currency-cell col-currency">' + escapeHtml(getCurrencyLabel(rowData.currency || '$')) + '</td>' +
+                    '<td class="print-total-cell col-total">' + escapeHtml(totalText) + '</td>';
                 tbody.appendChild(tr);
             });
 
@@ -1179,7 +1200,15 @@
 
         function restoreTableAfterPrint() {
             const table = document.getElementById('requestTable');
+            const theadRow = document.querySelector('#requestTable thead tr');
+
             if (table) table.classList.remove('is-print-static');
+
+            if (printActionHeaderBackup && theadRow && !document.querySelector('#requestTable thead .col-actions')) {
+                theadRow.appendChild(printActionHeaderBackup);
+                printActionHeaderBackup = null;
+            }
+
             if (tablePrintBackup) {
                 renderRequestTable(tablePrintBackup);
                 tablePrintBackup = null;
