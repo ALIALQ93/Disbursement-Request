@@ -411,6 +411,7 @@
             border-bottom-color: #0066cc;
             background: #f0f7ff;
         }
+        .date-print-display { display: none; }
         .closing { margin: 2mm 0 1mm; text-align: right; font-size: 15px; font-family: 'Arial', 'Tahoma', sans-serif; }
         .signature-section {
             margin-top: 6mm;
@@ -539,26 +540,100 @@
         }
         .cert-logo img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
         @media print {
-            body { background: white; padding: 0; }
-            .page-container { box-shadow: none; margin: 0; width: 210mm; height: 297mm; }
+            * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            html, body { background: white; padding: 0; margin: 0; }
+            .page-container {
+                box-shadow: none;
+                margin: 0 auto;
+                width: 210mm;
+                min-height: 297mm;
+                max-height: none;
+                height: auto;
+                overflow: visible;
+            }
+            .content-area {
+                height: auto;
+                min-height: calc(297mm - 20mm);
+                page-break-inside: auto;
+            }
             .print-button, .print-buttons-container { display: none !important; }
-            .language-selector, .no-print { display: none !important; }
+            .language-selector, .no-print, .generate-serial-btn { display: none !important; }
             .editable-field { border-bottom: 1.5px solid #333; background: white; }
-            .request-table .row-desc, .request-table .row-total { border: none; background: white; }
-            .request-table tbody tr:nth-child(even) { background: white; }
-            .request-notes-field { background: white; border: 1.5px solid #333; }
+            .request-intro { border: none; background: white; }
+            .serial-input,
+            input.editable-field,
+            input[type="date"],
+            .date-input-screen {
+                border: none !important;
+                border-bottom: 1.5px solid #333 !important;
+                background: white !important;
+                box-shadow: none !important;
+            }
+            .date-input-screen { display: none !important; }
+            .date-print-display {
+                display: inline !important;
+                border-bottom: 1.5px solid #333;
+                padding: 0 6px 2px;
+                min-width: 110px;
+                direction: ltr;
+            }
+            .request-table { page-break-inside: auto; }
+            .request-table thead { display: table-header-group; }
+            .request-table tfoot { display: table-footer-group; }
+            .request-table thead th {
+                background: #1a237e !important;
+                color: #fff !important;
+            }
+            .request-table tfoot td { background: #eef1fb !important; }
+            .request-table .row-desc,
+            .request-table .row-total,
+            .request-table .row-currency {
+                border: none !important;
+                background: white !important;
+            }
+            .request-table .row-desc { resize: none; overflow: hidden; }
+            .request-table tbody tr:nth-child(even) { background: white !important; }
+            .request-notes-label { color: #1a237e; }
+            .request-notes-field {
+                background: white !important;
+                border: 1.5px solid #333 !important;
+                resize: none;
+            }
+            .sig-title.editable-field,
+            .sig-name .editable-field {
+                border: none !important;
+                background: white !important;
+            }
+            .sig-name { border-top: 1px solid #333 !important; }
             .page-border { border: 2mm solid #1a237e; }
+            .body-bottom-section, .signature-section { page-break-inside: avoid; }
             .no-header-footer .header, .no-header-footer .footer { display: none !important; }
-            .no-header-footer .content-area { padding: 30mm 25mm; min-height: 100%; height: 100%; justify-content: center; display: flex; flex-direction: column; align-items: stretch; }
-            .no-header-footer .body-text { margin: 0; flex: 0 1 auto; display: flex; flex-direction: column; justify-content: center; }
-            .no-header-footer .serial-number { margin-bottom: 6mm; text-align: right; }
-            .no-header-footer .date-recipient { margin: 5mm 0 6mm; text-align: right; }
-            .no-header-footer .subject { margin: 6mm 0 7mm; }
-            .no-header-footer .greeting { margin-bottom: 6mm; text-align: right; }
-            .no-header-footer .request-table-wrapper { margin: 6mm 0 6mm; text-align: right; }
-            .no-header-footer .body-bottom-section { margin-top: 10mm; display: flex; flex-direction: column; align-items: flex-end; }
-            .no-header-footer .closing { margin: 6mm 0 4mm; text-align: right; }
-            .no-header-footer .signature-section { margin-top: 6mm; text-align: right; }
+            .no-header-footer .content-area {
+                padding: 25mm 20mm;
+                min-height: 297mm;
+                justify-content: flex-start;
+            }
+            .no-header-footer .body-text { margin: 0; }
+            .no-header-footer .serial-number { margin-bottom: 5mm; text-align: right; }
+            .no-header-footer .date-recipient { margin: 4mm 0 5mm; text-align: right; }
+            .no-header-footer .subject { margin: 5mm 0 6mm; }
+            .no-header-footer .greeting { margin-bottom: 5mm; text-align: right; }
+            .no-header-footer .request-table-wrapper { margin: 4mm 0; text-align: right; }
+            .no-header-footer .body-bottom-section {
+                margin-top: 8mm;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            .no-header-footer .closing { margin: 5mm 0 4mm; text-align: right; }
+            .no-header-footer .signature-section { margin-top: 5mm; text-align: right; }
+            body[dir="ltr"] .no-header-footer .serial-number,
+            body[dir="ltr"] .no-header-footer .date-recipient,
+            body[dir="ltr"] .no-header-footer .greeting,
+            body[dir="ltr"] .no-header-footer .request-table-wrapper,
+            body[dir="ltr"] .no-header-footer .closing,
+            body[dir="ltr"] .no-header-footer .signature-section,
+            body[dir="ltr"] .no-header-footer .body-bottom-section { text-align: left; align-items: flex-start; }
         }
         .print-buttons-container {
             position: fixed;
@@ -590,7 +665,7 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
         .print-button[style*="background: #ff6b35"]:hover { background: #e55a2b !important; }
-        .content-area { page-break-inside: avoid; }
+        .content-area { page-break-inside: auto; }
     </style>
 </head>
 <body>
@@ -625,7 +700,8 @@
             <div class="date-recipient">
                 <div class="date-field">
                     <strong>التاريخ:</strong>
-                    <input type="date" id="date" class="editable-field" value="2025-02-18">
+                    <input type="date" id="date" class="editable-field date-input-screen" value="2025-02-18">
+                    <span id="datePrintDisplay" class="date-print-display"></span>
                 </div>
                 <div class="recipient-field">
                     <strong>إلى:</strong>
@@ -713,9 +789,13 @@
 
     <script>
         const dateInput = document.getElementById('date');
-        dateInput.addEventListener('change', function() { localStorage.setItem('disbursement_date', this.value); });
+        dateInput.addEventListener('change', function() {
+            localStorage.setItem('disbursement_date', this.value);
+            syncPrintDateDisplay();
+        });
         const savedDate = localStorage.getItem('disbursement_date');
         if (savedDate) dateInput.value = savedDate;
+        syncPrintDateDisplay();
 
         const editableFields = document.querySelectorAll('[contenteditable="true"]:not(#amount), input.editable-field');
         editableFields.forEach(field => {
@@ -1229,9 +1309,25 @@
             });
         }
 
+        function formatDisplayDate(isoDate) {
+            if (!isoDate) return '';
+            const parts = isoDate.split('-');
+            if (parts.length !== 3) return isoDate;
+            return parts[2] + '/' + parts[1] + '/' + parts[0];
+        }
+
+        function syncPrintDateDisplay() {
+            const dateInput = document.getElementById('date');
+            const display = document.getElementById('datePrintDisplay');
+            if (dateInput && display) {
+                display.textContent = formatDisplayDate(dateInput.value);
+            }
+        }
+
         function printWithHeaderFooter() {
             const pageContainer = document.querySelector('.page-container');
             if (pageContainer) {
+                syncPrintDateDisplay();
                 pageContainer.classList.remove('no-header-footer');
                 window.print();
             }
@@ -1240,6 +1336,7 @@
         function printWithoutHeaderFooter() {
             const pageContainer = document.querySelector('.page-container');
             if (pageContainer) {
+                syncPrintDateDisplay();
                 pageContainer.classList.add('no-header-footer');
                 window.removeEventListener('afterprint', restoreHeaderFooter);
                 window.addEventListener('afterprint', restoreHeaderFooter);
