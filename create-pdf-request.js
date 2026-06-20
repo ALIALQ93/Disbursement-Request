@@ -126,7 +126,7 @@ async function createFillablePDF() {
     form.updateFieldAppearances(font);
 
     const pdfBytes = await pdfDoc.save();
-    const outPath = path.join(__dirname, 'طلب_صرف_Disbursement_Request.pdf');
+    const outPath = path.join(__dirname, 'Disbursement_Request.pdf');
     fs.writeFileSync(outPath, pdfBytes);
     return outPath;
 }

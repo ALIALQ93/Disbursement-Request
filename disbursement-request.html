@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلب صرف - AL ALBAB COMPANY</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', 'Tahoma', sans-serif;
+            direction: rtl;
+            text-align: right;
+            background: #e8e8e8;
+            padding: 20px;
+            margin: 0;
+        }
+        .page-container {
+            width: 210mm;
+            min-height: 297mm;
+            max-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .page-border {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 3mm solid #1a237e;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .page-border::before {
+            content: '';
+            position: absolute;
+            top: 2mm; left: 2mm; right: 2mm; bottom: 2mm;
+            border: 1px solid #dc143c;
+        }
+        .content-area {
+            position: relative;
+            z-index: 2;
+            padding: 10mm 15mm 5mm;
+            min-height: calc(100% - 20mm);
+            height: calc(100% - 20mm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .header {
+            margin-bottom: 4mm;
+            padding: 1.5mm 0 2mm;
+            border-bottom: 2px solid #dc143c;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8mm;
+        }
+        .header-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: right;
+            padding-right: 5mm;
+            align-items: flex-end;
+            min-width: 0;
+        }
+        .logo-container {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            order: -1;
+        }
+        .logo-image { width: 150px; height: auto; display: block; }
+        .company-name {
+            font-size: 20px;
+            font-weight: 900;
+            color: #1a237e;
+            letter-spacing: 2.5px;
+            margin: 0 0 1.5mm 0;
+            text-transform: uppercase;
+            text-align: right;
+            line-height: 1.3;
+        }
+        .company-subtitle {
+            font-size: 10px;
+            color: #dc143c;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin: 0 0 2mm 0;
+            text-align: right;
+        }
+        .company-name-ar {
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            text-align: right;
+            line-height: 1.5;
+            margin: 0;
+            padding: 2mm 0 0;
+            border-top: 1px solid #ddd;
+        }
+        .serial-number {
+            margin-bottom: 3mm;
+            text-align: right;
+            font-size: 14px;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+        }
+        .serial-number strong { color: #1a237e; font-weight: 700; }
+        .serial-input {
+            display: inline-block;
+            min-width: 150px;
+            border-bottom: 1.5px solid #333;
+            padding: 2px 6px;
+            margin: 0 5px;
+            background: #f9f9f9;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .serial-input:focus {
+            outline: 2px solid #0066cc;
+            background: white;
+            border-bottom-color: #0066cc;
+        }
+        .generate-serial-btn {
+            background: #1a237e;
+            color: white;
+            border: none;
+            padding: 3px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-right: 5px;
+        }
+        .generate-serial-btn:hover { background: #283593; }
+        .date-recipient {
+            margin: 3mm 0;
+            text-align: right;
+            font-size: 15px;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+        }
+        .date-field, .recipient-field { margin-bottom: 3mm; }
+        .date-field strong, .recipient-field strong { color: #1a237e; font-weight: 700; }
+        .language-selector, .template-selector {
+            margin: 3mm 0 3mm;
+            text-align: right;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        .language-selector strong, .template-selector strong { color: #1a237e; font-weight: 700; }
+        .language-select {
+            padding: 4px 8px;
+            border: 1.5px solid #1a237e;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a237e;
+            background: white;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .language-select:focus { outline: 2px solid #0066cc; border-color: #0066cc; }
+        body[dir="ltr"] { direction: ltr; text-align: left; }
+        body[dir="ltr"] .content-area, body[dir="ltr"] .header, body[dir="ltr"] .body-text, body[dir="ltr"] .footer { direction: ltr; text-align: left; }
+        body[dir="ltr"] .serial-number, body[dir="ltr"] .date-recipient, body[dir="ltr"] .greeting, body[dir="ltr"] .request-table-wrapper, body[dir="ltr"] .closing, body[dir="ltr"] .signature-section { text-align: left; }
+        body[dir="ltr"] .request-table th, body[dir="ltr"] .request-table td { text-align: left; }
+        body[dir="ltr"] .request-table .col-num,
+        body[dir="ltr"] .request-table .col-total { text-align: center; }
+        body[dir="ltr"] .request-table tfoot td { text-align: left; }
+        body[dir="ltr"] .request-table tfoot .total-amount { text-align: right; }
+        body[dir="ltr"] .subject { text-align: center; }
+        body[dir="ltr"] .signature-section { align-items: flex-start; }
+        body[dir="ltr"] .signatures-row { justify-content: flex-start; margin-right: 0; margin-left: 0; }
+        body[dir="ltr"] .request-intro { text-align: left; }
+        body[dir="ltr"] .request-table .row-desc { text-align: left; }
+        body[dir="ltr"] .request-table tfoot .total-label { text-align: left; }
+        body[dir="ltr"] .generate-serial-btn { margin-right: 0; margin-left: 5px; }
+        .template-select {
+            display: inline-block;
+            min-width: 220px;
+            padding: 5px 10px;
+            border: 1.5px solid #1a237e;
+            border-radius: 4px;
+            background: white;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a237e;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .template-select:focus { outline: 2px solid #0066cc; border-color: #0066cc; }
+        .currency-select {
+            display: inline-block;
+            min-width: 50px;
+            padding: 2px 5px;
+            border: 1px solid #1a237e;
+            border-radius: 3px;
+            font-size: 14px;
+            background: white;
+            color: #1a237e;
+            cursor: pointer;
+        }
+        .currency-select:focus { outline: 2px solid #0066cc; border-color: #0066cc; }
+        .subject {
+            text-align: center;
+            margin: 3mm 0 4mm;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a237e;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+        }
+        .subject-label { display: inline-block; margin-left: 5px; }
+        .subject-field {
+            display: inline-block;
+            min-width: 120px;
+            border-bottom: 2px solid #1a237e;
+            padding: 2px 8px;
+            margin: 0 5px;
+            background: #f9f9f9;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .subject-field:focus {
+            outline: 2px solid #0066cc;
+            background: white;
+            border-bottom-color: #0066cc;
+        }
+        .body-text {
+            margin: 3mm 0;
+            line-height: 2.2;
+            font-size: 15px;
+            text-align: right;
+            flex: 0 1 auto;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+        }
+        .body-bottom-section { margin-top: 3mm; margin-bottom: 6mm; flex: 0 0 auto; page-break-inside: avoid; }
+        .greeting { margin-bottom: 3mm; font-size: 15px; font-family: 'Arial', 'Tahoma', sans-serif; }
+        .request-table-wrapper {
+            width: 100%;
+            margin: 3mm 0 1.5mm 0;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+        }
+        .request-intro {
+            display: block;
+            width: 100%;
+            margin-bottom: 3mm;
+            font-size: 15px;
+            line-height: 1.8;
+            text-align: right;
+            min-height: 1.5em;
+        }
+        .table-scroll { overflow-x: auto; }
+        .request-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            table-layout: fixed;
+        }
+        .request-table th,
+        .request-table td {
+            border: 1.5px solid #333;
+            padding: 6px 8px;
+            vertical-align: middle;
+            text-align: right;
+        }
+        .request-table thead th {
+            background: #1a237e;
+            color: white;
+            font-weight: 700;
+            text-align: center;
+        }
+        .request-table .col-num { width: 36px; text-align: center; }
+        .request-table .col-currency { width: 80px; text-align: center; }
+        .request-table .col-total { width: 120px; text-align: center; }
+        .request-table .col-actions { width: 44px; text-align: center; }
+        .request-table tbody tr:nth-child(even) { background: #fafafa; }
+        .request-table tfoot td {
+            background: #eef1fb;
+            font-weight: 700;
+            color: #1a237e;
+        }
+        .request-table tfoot .total-label { text-align: right; }
+        .request-table tfoot .total-currency { text-align: center; }
+        .request-table tfoot .total-amount { text-align: left; direction: ltr; font-weight: 800; }
+        .row-desc {
+            width: 100%;
+            min-height: 28px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-family: inherit;
+            text-align: right;
+            resize: vertical;
+        }
+        .row-desc:focus { outline: 2px solid #0066cc; background: #fff; }
+        .row-currency {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #1a237e;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a237e;
+            background: white;
+            cursor: pointer;
+        }
+        .row-total {
+            width: 100%;
+            border: none;
+            border-bottom: 1.5px solid #666;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a237e;
+            text-align: center;
+            direction: ltr;
+            font-family: inherit;
+        }
+        .row-total:focus { outline: none; border-bottom-color: #0066cc; background: #f0f7ff; }
+        .remove-row-btn {
+            background: #dc143c;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+        }
+        .remove-row-btn:hover { background: #b01030; }
+        .add-row-btn {
+            margin-top: 8px;
+            background: #1a237e;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: inherit;
+        }
+        .add-row-btn:hover { background: #283593; }
+        .request-notes {
+            margin-top: 10px;
+            width: 100%;
+        }
+        .request-notes-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 6px;
+        }
+        .request-notes-field {
+            width: 100%;
+            min-height: 72px;
+            border: 1.5px solid #333;
+            border-radius: 4px;
+            padding: 8px 10px;
+            font-size: 14px;
+            line-height: 1.7;
+            font-family: inherit;
+            text-align: right;
+            resize: vertical;
+            background: #fafafa;
+        }
+        .request-notes-field:focus {
+            outline: 2px solid #0066cc;
+            background: white;
+            border-color: #0066cc;
+        }
+        body[dir="ltr"] .request-notes-field { text-align: left; }
+        .editable-field {
+            display: inline-block;
+            min-width: 130px;
+            border-bottom: 1.5px solid #333;
+            padding: 2px 5px;
+            margin: 0 3px;
+            background: #f9f9f9;
+            font-weight: 500;
+            font-size: 15px;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+        }
+        .editable-field:focus {
+            outline: 2px solid #0066cc;
+            background: white;
+            border-bottom-color: #0066cc;
+        }
+        input.editable-field {
+            border: none;
+            border-bottom: 1.5px solid #333;
+            background: transparent;
+            font-size: 15px;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+            padding: 2px 5px;
+        }
+        input.editable-field:focus {
+            outline: none;
+            border-bottom-color: #0066cc;
+            background: #f0f7ff;
+        }
+        .closing { margin: 2mm 0 1mm; text-align: right; font-size: 15px; font-family: 'Arial', 'Tahoma', sans-serif; }
+        .signature-section {
+            margin-top: 6mm;
+            margin-right: 0;
+            margin-bottom: 0;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            page-break-inside: avoid;
+        }
+        .signatures-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            gap: 10mm;
+            flex-wrap: wrap;
+            margin-right: 0;
+            width: 100%;
+        }
+        .signature-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 80px;
+            flex: 1 1 0;
+            max-width: 120px;
+        }
+        .sig-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1a237e;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+            margin-bottom: 3px;
+        }
+        .sig-title.editable-field {
+            display: inline-block;
+            padding: 2px 5px;
+            border: 1px dashed transparent;
+            border-radius: 3px;
+            cursor: text;
+            transition: all 0.2s;
+            min-width: 80px;
+        }
+        .sig-title.editable-field:hover {
+            background: #f0f0f0;
+            border-color: #1a237e;
+        }
+        .sig-title.editable-field:focus {
+            outline: none;
+            background: #fff;
+            border: 2px solid #0066cc;
+            border-style: solid;
+        }
+        .sig-name {
+            font-size: 14px;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+            border-top: 1px solid #333;
+            padding-top: 3px;
+            min-width: 100px;
+            min-height: 1.4em;
+        }
+        .sig-name .editable-field {
+            display: inline-block;
+            min-width: 100px;
+            padding: 2px 5px;
+            border: 1px dashed #1a237e;
+            border-radius: 3px;
+            background: #f9f9f9;
+            cursor: text;
+            transition: all 0.2s;
+        }
+        .sig-name .editable-field:hover {
+            background: #fff;
+            border-color: #0066cc;
+        }
+        .sig-name .editable-field:focus {
+            outline: none;
+            background: #fff;
+            border: 2px solid #0066cc;
+            border-style: solid;
+        }
+        .manager-title {
+            margin-top: 0;
+            margin-bottom: 1mm;
+            font-size: 15px;
+            font-weight: bold;
+            color: #1a237e;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+        }
+        .manager-name { font-size: 15px; margin-top: 0; font-family: 'Arial', 'Tahoma', sans-serif; }
+        .footer {
+            margin-top: auto;
+            padding-top: 4mm;
+            padding-bottom: 2mm;
+            border-top: 1px solid #000;
+            background: white;
+            flex-shrink: 0;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 11px;
+            margin-top: 2mm;
+        }
+        .footer-info { flex: 1; min-width: 200px; text-align: left; direction: ltr; }
+        .footer-info div { margin: 1.5px 0; line-height: 1.4; color: #000; }
+        .footer-info a { color: #0066cc; text-decoration: underline; }
+        .footer-info a:hover { color: #004499; }
+        .footer-logos { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .cert-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .cert-logo img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
+        @media print {
+            body { background: white; padding: 0; }
+            .page-container { box-shadow: none; margin: 0; width: 210mm; height: 297mm; }
+            .print-button, .print-buttons-container { display: none !important; }
+            .language-selector, .no-print { display: none !important; }
+            .editable-field { border-bottom: 1.5px solid #333; background: white; }
+            .request-table .row-desc, .request-table .row-total { border: none; background: white; }
+            .request-table tbody tr:nth-child(even) { background: white; }
+            .request-notes-field { background: white; border: 1.5px solid #333; }
+            .page-border { border: 2mm solid #1a237e; }
+            .no-header-footer .header, .no-header-footer .footer { display: none !important; }
+            .no-header-footer .content-area { padding: 30mm 25mm; min-height: 100%; height: 100%; justify-content: center; display: flex; flex-direction: column; align-items: stretch; }
+            .no-header-footer .body-text { margin: 0; flex: 0 1 auto; display: flex; flex-direction: column; justify-content: center; }
+            .no-header-footer .serial-number { margin-bottom: 6mm; text-align: right; }
+            .no-header-footer .date-recipient { margin: 5mm 0 6mm; text-align: right; }
+            .no-header-footer .subject { margin: 6mm 0 7mm; }
+            .no-header-footer .greeting { margin-bottom: 6mm; text-align: right; }
+            .no-header-footer .request-table-wrapper { margin: 6mm 0 6mm; text-align: right; }
+            .no-header-footer .body-bottom-section { margin-top: 10mm; display: flex; flex-direction: column; align-items: flex-end; }
+            .no-header-footer .closing { margin: 6mm 0 4mm; text-align: right; }
+            .no-header-footer .signature-section { margin-top: 6mm; text-align: right; }
+        }
+        .print-buttons-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .print-button {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+        }
+        .print-button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        .print-button[style*="background: #ff6b35"]:hover { background: #e55a2b !important; }
+        .content-area { page-break-inside: avoid; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-border"></div>
+        <div class="content-area">
+            <div class="header">
+                <div class="logo-container">
+                    <img src="ALBAB_Company_300x300_white_bg.png" alt="AL ALBAB COMPANY Logo" class="logo-image">
+                </div>
+                <div class="header-content">
+                    <div class="company-name">AL ALBAB COMPANY</div>
+                    <div class="company-subtitle">FOR GENERAL CONTRACTING LTD, IRAQ</div>
+                    <div class="company-name-ar">شركة الألباب للمقاولات العامة المحدودة</div>
+                </div>
+            </div>
+
+            <div class="language-selector">
+                <strong id="languageLabel">اللغة:</strong>
+                <select id="languageSelect" class="language-select" onchange="switchLanguage()">
+                    <option value="ar">العربية</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+
+            <div class="serial-number">
+                <strong>الرقم التسلسلي:</strong>
+                <input type="text" id="serialNumber" class="serial-input" placeholder="26-06-14">
+                <button type="button" class="generate-serial-btn" onclick="generateSerialNumber()">توليد تلقائي</button>
+            </div>
+
+            <div class="date-recipient">
+                <div class="date-field">
+                    <strong>التاريخ:</strong>
+                    <input type="date" id="date" class="editable-field" value="2025-02-18">
+                </div>
+                <div class="recipient-field">
+                    <strong>إلى:</strong>
+                    <span class="editable-field" contenteditable="true" id="bankName">قسم الحسابات</span>
+                </div>
+            </div>
+
+            <div class="subject">
+                <span class="subject-label" id="subjectLabel">م/</span>
+                <span class="subject-field" contenteditable="true" id="subjectType">طلب صرف</span>
+            </div>
+
+            <div class="body-text">
+                <div class="greeting">تحية طيبة،</div>
+                <div class="request-table-wrapper" id="mainContent">
+                    <p class="request-intro editable-field" contenteditable="true" id="requestIntro"></p>
+                    <div class="table-scroll">
+                        <table class="request-table" id="requestTable">
+                            <thead>
+                                <tr>
+                                    <th class="col-num">#</th>
+                                    <th class="col-desc" id="thDesc"></th>
+                                    <th class="col-currency" id="thCurrency"></th>
+                                    <th class="col-total" id="thTotal"></th>
+                                    <th class="col-actions no-print"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestTableBody"></tbody>
+                            <tfoot id="requestTableFoot"></tfoot>
+                        </table>
+                    </div>
+                    <button type="button" class="add-row-btn no-print" id="addRowBtn" onclick="addRequestRow()"></button>
+                    <div class="request-notes">
+                        <label class="request-notes-label" id="notesLabel" for="requestNotes"></label>
+                        <textarea class="request-notes-field" id="requestNotes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="body-bottom-section">
+                    <div class="closing">مع التقدير،</div>
+                    <div class="signature-section signatures-row">
+                        <div class="signature-row">
+                            <div class="sig-title editable-field" contenteditable="true" id="sigTitleApplicant">مقدم الطلب</div>
+                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigApplicant" style="min-width: 100px;"></span></div>
+                        </div>
+                        <div class="signature-row">
+                            <div class="sig-title editable-field" contenteditable="true" id="sigTitleAccounts">الحسابات</div>
+                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigAccounts" style="min-width: 100px;"></span></div>
+                        </div>
+                        <div class="signature-row">
+                            <div class="sig-title editable-field" contenteditable="true" id="sigTitleManagement">الإدارة</div>
+                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigManagement" style="min-width: 100px;"></span></div>
+                        </div>
+                        <div class="signature-row">
+                            <div class="sig-title editable-field" contenteditable="true" id="sigTitleDisbursementOrder">أمر الصرف</div>
+                            <div class="sig-name"><span class="editable-field" contenteditable="true" id="sigDisbursementOrder" style="min-width: 100px;"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="footer-content">
+                    <div class="footer-logos">
+                        <div class="cert-logo"><img src="logos/dunbradstreetregisteredbadge.png" alt="Dun & Bradstreet" onerror="this.style.display='none'"></div>
+                        <div class="cert-logo"><img src="logos/iso-bas-certification-logo-720E09C6C6-seeklogo.com.png" alt="BAS OHSAS 18001" onerror="this.style.display='none'"></div>
+                        <div class="cert-logo"><img src="logos/iso-bas-certification-logo-png_seeklogo-184314.png" alt="BAS ISO 9001" onerror="this.style.display='none'"></div>
+                        <div class="cert-logo"><img src="logos/iso-14001.png" alt="BAS ISO 14001" onerror="this.style.display='none'"></div>
+                        <div class="cert-logo"><img src="logos/aa7qyxofr.webp" alt="ISO 22000" onerror="this.style.display='none'"></div>
+                    </div>
+                    <div class="footer-info">
+                        <div>AL-Karada Dakhel, Baghdad, Iraq.</div>
+                        <div>Email: <a href="mailto:info@albab.com.iq">info@albab.com.iq</a> / Website: <a href="http://www.albab.com.iq" target="_blank">www.albab.com.iq</a></div>
+                        <div>Tel: +964 7816 896 331 / +964 7834 978 803 / +964 7834 978 801 / +964 7834 978</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="print-buttons-container">
+        <button class="print-button" onclick="printWithHeaderFooter()" title="طباعة النموذج مع الرأس والتذييل">🖨️ طباعة مع الرأس والتذييل</button>
+        <button class="print-button" onclick="printWithoutHeaderFooter()" style="background: #ff6b35;" title="طباعة النموذج بدون الرأس والتذييل">🖨️ طباعة بدون رأس وتذييل</button>
+    </div>
+
+    <script>
+        const dateInput = document.getElementById('date');
+        dateInput.addEventListener('change', function() { localStorage.setItem('disbursement_date', this.value); });
+        const savedDate = localStorage.getItem('disbursement_date');
+        if (savedDate) dateInput.value = savedDate;
+
+        const editableFields = document.querySelectorAll('[contenteditable="true"]:not(#amount), input.editable-field');
+        editableFields.forEach(field => {
+            if (field.id === 'amount') return;
+            const saved = localStorage.getItem('disbursement_' + field.id);
+            if (saved && field.tagName !== 'INPUT') field.textContent = saved;
+            else if (saved && field.tagName === 'INPUT') field.value = saved;
+            field.addEventListener('blur', function() {
+                if (this.id === 'amount') return;
+                const key = 'disbursement_' + this.id;
+                if (this.tagName === 'INPUT') localStorage.setItem(key, this.value);
+                else localStorage.setItem(key, this.textContent);
+            });
+        });
+
+        function parseAmount(value) {
+            if (!value) return 0;
+            const num = parseFloat(String(value).replace(/[^0-9.]/g, ''));
+            return isNaN(num) ? 0 : num;
+        }
+
+        function formatAmount(num) {
+            if (!num) return '';
+            return num.toLocaleString('en-US', { maximumFractionDigits: 2 });
+        }
+
+        function getTableLabels() {
+            return translations[currentLanguage].table;
+        }
+
+        function normalizeRowData(row) {
+            if (row.total !== undefined) {
+                return {
+                    desc: row.desc || '',
+                    currency: row.currency || '$',
+                    total: row.total || ''
+                };
+            }
+            if (row.qty !== undefined || row.unitPrice !== undefined) {
+                const qty = parseAmount(row.qty);
+                const price = parseAmount(row.unitPrice);
+                const computed = qty && price ? qty * price : parseAmount(row.unitPrice || row.qty);
+                return {
+                    desc: row.desc || '',
+                    currency: row.currency || '$',
+                    total: computed ? String(computed) : ''
+                };
+            }
+            if (row.amount) {
+                return {
+                    desc: row.desc || '',
+                    currency: row.currency || '$',
+                    total: row.amount
+                };
+            }
+            return { desc: row.desc || '', currency: row.currency || '$', total: '' };
+        }
+
+        function getRowTotalValue(row) {
+            const totalEl = row.querySelector('.row-total');
+            return totalEl ? parseAmount(totalEl.value) : 0;
+        }
+
+        function getDefaultTableData() {
+            return {
+                intro: translations[currentLanguage].tableIntro,
+                notes: '',
+                rows: [
+                    { desc: '', currency: '$', total: '' },
+                    { desc: '', currency: '$', total: '' },
+                    { desc: '', currency: 'IQD', total: '' }
+                ]
+            };
+        }
+
+        function loadTableData() {
+            const saved = localStorage.getItem('disbursement_tableData');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data && Array.isArray(data.rows) && data.rows.length) {
+                        data.rows = data.rows.map(normalizeRowData);
+                        return data;
+                    }
+                } catch (e) {}
+            }
+            return getDefaultTableData();
+        }
+
+        function saveTableData() {
+            const introEl = document.getElementById('requestIntro');
+            const notesEl = document.getElementById('requestNotes');
+            const rows = [];
+            document.querySelectorAll('#requestTableBody tr').forEach(function(row) {
+                rows.push({
+                    desc: row.querySelector('.row-desc') ? row.querySelector('.row-desc').value : '',
+                    currency: row.querySelector('.row-currency') ? row.querySelector('.row-currency').value : '$',
+                    total: row.querySelector('.row-total') ? row.querySelector('.row-total').value : ''
+                });
+            });
+            localStorage.setItem('disbursement_tableData', JSON.stringify({
+                intro: introEl ? introEl.textContent : '',
+                notes: notesEl ? notesEl.value : '',
+                rows: rows
+            }));
+        }
+
+        function updateTableLabels() {
+            const labels = getTableLabels();
+            const thDesc = document.getElementById('thDesc');
+            const thCurrency = document.getElementById('thCurrency');
+            const thTotal = document.getElementById('thTotal');
+            const addRowBtn = document.getElementById('addRowBtn');
+            if (thDesc) thDesc.textContent = labels.desc;
+            if (thCurrency) thCurrency.textContent = labels.currency;
+            if (thTotal) thTotal.textContent = labels.rowTotal;
+            if (addRowBtn) addRowBtn.textContent = '+ ' + labels.addRow;
+            document.querySelectorAll('.remove-row-btn').forEach(function(btn) {
+                btn.setAttribute('title', labels.removeRow);
+            });
+            const notesLabel = document.getElementById('notesLabel');
+            const notesField = document.getElementById('requestNotes');
+            if (notesLabel) notesLabel.textContent = labels.notes;
+            if (notesField) notesField.placeholder = labels.notesPlaceholder;
+        }
+
+        function updateTableTotals() {
+            const totals = {};
+            document.querySelectorAll('#requestTableBody tr').forEach(function(row) {
+                const currencyEl = row.querySelector('.row-currency');
+                if (!currencyEl) return;
+                const currency = currencyEl.value || '$';
+                const amount = getRowTotalValue(row);
+                if (amount > 0) totals[currency] = (totals[currency] || 0) + amount;
+            });
+
+            const foot = document.getElementById('requestTableFoot');
+            if (!foot) return;
+            foot.innerHTML = '';
+
+            const labels = getTableLabels();
+            const currencies = Object.keys(totals).sort(function(a, b) {
+                if (a === '$') return -1;
+                if (b === '$') return 1;
+                return a.localeCompare(b);
+            });
+
+            if (!currencies.length) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.innerHTML = '<td colspan="5" class="total-label">' + labels.noTotals + '</td>';
+                foot.appendChild(emptyRow);
+                return;
+            }
+
+            currencies.forEach(function(currency) {
+                const tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td colspan="2" class="total-label">' + labels.totalLabel + '</td>' +
+                    '<td class="total-currency">' + currency + '</td>' +
+                    '<td class="total-amount">' + formatAmount(totals[currency]) + '</td>' +
+                    '<td class="no-print"></td>';
+                foot.appendChild(tr);
+            });
+        }
+
+        function bindNumericField(el, row) {
+            if (!el) return;
+            el.addEventListener('input', function() { updateTableTotals(); });
+            el.addEventListener('blur', function() {
+                const value = parseAmount(this.value);
+                this.value = value ? formatAmount(value) : '';
+                saveTableData();
+                updateTableTotals();
+            });
+            el.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pasted = (e.clipboardData || window.clipboardData).getData('text');
+                const value = parseAmount(pasted);
+                this.value = value ? String(value) : '';
+                saveTableData();
+                updateTableTotals();
+            });
+        }
+
+        function bindRowEvents(row) {
+            const descEl = row.querySelector('.row-desc');
+            const currencyEl = row.querySelector('.row-currency');
+            const totalEl = row.querySelector('.row-total');
+            const removeBtn = row.querySelector('.remove-row-btn');
+
+            [descEl, currencyEl].forEach(function(el) {
+                if (!el) return;
+                el.addEventListener('input', function() { saveTableData(); updateTableTotals(); });
+                el.addEventListener('change', function() { saveTableData(); updateTableTotals(); });
+                el.addEventListener('blur', function() { saveTableData(); updateTableTotals(); });
+            });
+
+            bindNumericField(totalEl, row);
+
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function() {
+                    const body = document.getElementById('requestTableBody');
+                    if (!body || body.children.length <= 1) return;
+                    row.remove();
+                    renumberTableRows();
+                    saveTableData();
+                    updateTableTotals();
+                });
+            }
+        }
+
+        function renumberTableRows() {
+            document.querySelectorAll('#requestTableBody tr').forEach(function(row, index) {
+                const numCell = row.querySelector('.row-num');
+                if (numCell) numCell.textContent = index + 1;
+            });
+        }
+
+        function getCurrencySelectHtml(selectedCurrency) {
+            const labels = translations[currentLanguage].currencyOptions;
+            const currency = selectedCurrency || '$';
+            return '<select class="row-currency">' +
+                '<option value="$"' + (currency === '$' ? ' selected' : '') + '>' + labels['$'] + '</option>' +
+                '<option value="IQD"' + (currency === 'IQD' ? ' selected' : '') + '>' + labels.IQD + '</option>' +
+            '</select>';
+        }
+
+        function createRequestRow(rowData, index) {
+            const normalized = normalizeRowData(rowData);
+            const tr = document.createElement('tr');
+            const totalValue = normalized.total ? formatAmount(parseAmount(normalized.total)) : '';
+            tr.innerHTML =
+                '<td class="col-num row-num">' + (index + 1) + '</td>' +
+                '<td><textarea class="row-desc" rows="2">' + escapeHtml(normalized.desc || '') + '</textarea></td>' +
+                '<td>' + getCurrencySelectHtml(normalized.currency) + '</td>' +
+                '<td><input type="text" class="row-total" value="' + escapeHtml(totalValue) + '" inputmode="decimal"></td>' +
+                '<td class="no-print"><button type="button" class="remove-row-btn" title="' + getTableLabels().removeRow + '">×</button></td>';
+            bindRowEvents(tr);
+            return tr;
+        }
+
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function renderRequestTable(data) {
+            const body = document.getElementById('requestTableBody');
+            const introEl = document.getElementById('requestIntro');
+            const notesEl = document.getElementById('requestNotes');
+            if (!body) return;
+
+            body.innerHTML = '';
+            data.rows.forEach(function(rowData, index) {
+                body.appendChild(createRequestRow(rowData, index));
+            });
+
+            if (introEl) {
+                if (data.intro) introEl.textContent = data.intro;
+                else introEl.textContent = translations[currentLanguage].tableIntro;
+            }
+
+            if (notesEl) notesEl.value = data.notes || '';
+
+            updateTableLabels();
+            updateTableTotals();
+        }
+
+        function addRequestRow() {
+            const body = document.getElementById('requestTableBody');
+            if (!body) return;
+            const row = createRequestRow({ desc: '', currency: '$', total: '' }, body.children.length);
+            body.appendChild(row);
+            saveTableData();
+            updateTableTotals();
+            const descEl = row.querySelector('.row-desc');
+            if (descEl) descEl.focus();
+        }
+
+        function initRequestTable() {
+            const data = loadTableData();
+            renderRequestTable(data);
+
+            const introEl = document.getElementById('requestIntro');
+            if (introEl) {
+                introEl.addEventListener('blur', saveTableData);
+            }
+
+            const notesEl = document.getElementById('requestNotes');
+            if (notesEl) {
+                notesEl.addEventListener('input', saveTableData);
+                notesEl.addEventListener('blur', saveTableData);
+            }
+        }
+
+        function isDefaultLocalizedText(text, arText, enText) {
+            const value = String(text || '').trim();
+            return !value || value === arText.trim() || value === enText.trim();
+        }
+
+        function updateLocalizedIntro() {
+            const introEl = document.getElementById('requestIntro');
+            if (!introEl) return;
+            const arIntro = translations.ar.tableIntro;
+            const enIntro = translations.en.tableIntro;
+            if (isDefaultLocalizedText(introEl.textContent, arIntro, enIntro)) {
+                introEl.textContent = translations[currentLanguage].tableIntro;
+                saveTableData();
+            }
+        }
+
+        function updateLocalizedSubject() {
+            const subjectType = document.getElementById('subjectType');
+            if (!subjectType) return;
+            const arSub = translations.ar.subject;
+            const enSub = translations.en.subject;
+            const saved = localStorage.getItem('disbursement_subjectType');
+            const currentText = subjectType.textContent.trim();
+
+            if (saved && saved !== arSub && saved !== enSub) {
+                subjectType.textContent = saved;
+                return;
+            }
+            if (isDefaultLocalizedText(currentText, arSub, enSub)) {
+                subjectType.textContent = translations[currentLanguage].subject;
+            }
+        }
+
+        function updateCurrencyOptions() {
+            const labels = translations[currentLanguage].currencyOptions;
+            document.querySelectorAll('.row-currency').forEach(function(select) {
+                const value = select.value || '$';
+                select.innerHTML =
+                    '<option value="$"' + (value === '$' ? ' selected' : '') + '>' + labels['$'] + '</option>' +
+                    '<option value="IQD"' + (value === 'IQD' ? ' selected' : '') + '>' + labels.IQD + '</option>';
+            });
+        }
+
+        const translations = {
+            ar: {
+                pageTitle: 'طلب صرف - AL ALBAB COMPANY',
+                languageLabel: 'اللغة:',
+                serialNumber: 'الرقم التسلسلي:',
+                generateSerial: 'توليد تلقائي',
+                date: 'التاريخ:',
+                to: 'إلى:',
+                subjectLabel: 'م/',
+                greeting: 'تحية طيبة،',
+                closing: 'مع التقدير،',
+                sigApplicant: 'مقدم الطلب',
+                sigAccounts: 'الحسابات',
+                sigManagement: 'الإدارة',
+                sigDisbursementOrder: 'أمر الصرف',
+                subject: 'طلب صرف',
+                recipientDefault: 'قسم الحسابات',
+                tableIntro: 'نرجو صرف المبالغ التالية حسب الجدول:',
+                currencyOptions: { '$': 'دولار ($)', 'IQD': 'دينار (IQD)' },
+                table: {
+                    desc: 'الشرح / تفاصيل الطلب',
+                    currency: 'العملة',
+                    rowTotal: 'الإجمالي',
+                    totalLabel: 'الإجمالي الكلي',
+                    addRow: 'إضافة سطر',
+                    removeRow: 'حذف',
+                    noTotals: '—',
+                    notes: 'ملاحظات:',
+                    notesPlaceholder: 'أدخل أي ملاحظات إضافية هنا...'
+                },
+                printWithHeader: 'طباعة مع الرأس والتذييل',
+                printWithoutHeader: 'طباعة بدون الرأس والتذييل',
+                printWithHeaderTitle: 'طباعة النموذج مع الرأس والتذييل',
+                printWithoutHeaderTitle: 'طباعة النموذج بدون الرأس والتذييل'
+            },
+            en: {
+                pageTitle: 'Disbursement Request - AL ALBAB COMPANY',
+                languageLabel: 'Language:',
+                serialNumber: 'Serial Number:',
+                generateSerial: 'Auto Generate',
+                date: 'Date:',
+                to: 'To:',
+                recipientDefault: 'Accounts Department',
+                subjectLabel: 'Re:',
+                greeting: 'Dear Sir/Madam,',
+                closing: 'Best regards,',
+                sigApplicant: 'Submitted By',
+                sigAccounts: 'Accounts',
+                sigManagement: 'Administration',
+                sigDisbursementOrder: 'Payment Authorization',
+                subject: 'Disbursement Request',
+                tableIntro: 'Please approve disbursement of the following amounts as detailed below:',
+                currencyOptions: { '$': 'USD ($)', 'IQD': 'IQD' },
+                table: {
+                    desc: 'Description / Details',
+                    currency: 'Currency',
+                    rowTotal: 'Amount',
+                    totalLabel: 'Grand Total',
+                    addRow: 'Add Row',
+                    removeRow: 'Remove',
+                    noTotals: '—',
+                    notes: 'Notes:',
+                    notesPlaceholder: 'Enter any additional notes here...'
+                },
+                printWithHeader: 'Print with Header & Footer',
+                printWithoutHeader: 'Print without Header & Footer',
+                printWithHeaderTitle: 'Print form with header and footer',
+                printWithoutHeaderTitle: 'Print form without header and footer'
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('disbursement_language') || 'ar';
+
+        function switchLanguage() {
+            const langSelect = document.getElementById('languageSelect');
+            if (!langSelect) return;
+            currentLanguage = langSelect.value;
+            localStorage.setItem('disbursement_language', currentLanguage);
+            document.documentElement.setAttribute('lang', currentLanguage);
+            document.documentElement.setAttribute('dir', currentLanguage === 'ar' ? 'rtl' : 'ltr');
+            document.body.setAttribute('dir', currentLanguage === 'ar' ? 'rtl' : 'ltr');
+
+            const t = translations[currentLanguage];
+            document.title = t.pageTitle;
+
+            const languageLabel = document.getElementById('languageLabel');
+            if (languageLabel) languageLabel.textContent = t.languageLabel;
+
+            const serialLabel = document.querySelector('.serial-number strong');
+            if (serialLabel) serialLabel.textContent = t.serialNumber;
+            const generateBtn = document.querySelector('.generate-serial-btn');
+            if (generateBtn) generateBtn.textContent = t.generateSerial;
+            const dateLabel = document.querySelector('.date-field strong');
+            if (dateLabel) dateLabel.textContent = t.date;
+            const toLabel = document.querySelector('.recipient-field strong');
+            if (toLabel) toLabel.textContent = t.to;
+            const bankNameEl = document.getElementById('bankName');
+            if (bankNameEl) {
+                const arDefault = translations.ar.recipientDefault;
+                const enDefault = translations.en.recipientDefault;
+                if (isDefaultLocalizedText(bankNameEl.textContent, arDefault, enDefault)) {
+                    bankNameEl.textContent = t.recipientDefault;
+                }
+            }
+            const subjectLabel = document.getElementById('subjectLabel');
+            if (subjectLabel) subjectLabel.textContent = t.subjectLabel;
+            document.querySelector('.greeting').textContent = t.greeting;
+            document.querySelector('.closing').textContent = t.closing;
+
+            function updateSigTitle(elementId, storageKey, arDefault, enDefault) {
+                const el = document.getElementById(elementId);
+                if (!el) return;
+                const saved = localStorage.getItem(storageKey);
+                if (saved && saved !== arDefault && saved !== enDefault) return;
+                if (isDefaultLocalizedText(el.textContent, arDefault, enDefault)) {
+                    el.textContent = currentLanguage === 'ar' ? arDefault : enDefault;
+                }
+            }
+            updateSigTitle('sigTitleApplicant', 'disbursement_sigTitleApplicant', translations.ar.sigApplicant, translations.en.sigApplicant);
+            updateSigTitle('sigTitleAccounts', 'disbursement_sigTitleAccounts', translations.ar.sigAccounts, translations.en.sigAccounts);
+            updateSigTitle('sigTitleManagement', 'disbursement_sigTitleManagement', translations.ar.sigManagement, translations.en.sigManagement);
+            updateSigTitle('sigTitleDisbursementOrder', 'disbursement_sigTitleDisbursementOrder', translations.ar.sigDisbursementOrder, translations.en.sigDisbursementOrder);
+
+            const printButtons = document.querySelectorAll('.print-button');
+            if (printButtons.length >= 2) {
+                printButtons[0].textContent = '🖨️ ' + t.printWithHeader;
+                printButtons[1].textContent = '🖨️ ' + t.printWithoutHeader;
+                if (t.printWithHeaderTitle) printButtons[0].setAttribute('title', t.printWithHeaderTitle);
+                if (t.printWithoutHeaderTitle) printButtons[1].setAttribute('title', t.printWithoutHeaderTitle);
+            }
+
+            updateLocalizedSubject();
+            updateLocalizedIntro();
+            updateCurrencyOptions();
+            updateTableLabels();
+            updateTableTotals();
+        }
+
+        function generateSerialNumber() {
+            const serialInput = document.getElementById('serialNumber');
+            if (!serialInput) return;
+            const now = new Date();
+            const year = String(now.getFullYear()).slice(-2);
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+            const formattedSerial = year + '-' + month + '-' + hour;
+            serialInput.value = formattedSerial;
+        }
+
+        const serialInput = document.getElementById('serialNumber');
+        if (serialInput) {
+            generateSerialNumber();
+            serialInput.addEventListener('blur', function() {
+                localStorage.setItem('disbursement_serialNumber', this.value);
+            });
+        }
+
+        initRequestTable();
+
+        const langSelect = document.getElementById('languageSelect');
+        if (langSelect) {
+            langSelect.value = currentLanguage;
+            switchLanguage();
+        }
+
+        const subjectTypeEl = document.getElementById('subjectType');
+        if (subjectTypeEl) {
+            subjectTypeEl.addEventListener('blur', function() {
+                localStorage.setItem('disbursement_subjectType', this.textContent.trim());
+            });
+        }
+
+        function printWithHeaderFooter() {
+            const pageContainer = document.querySelector('.page-container');
+            if (pageContainer) {
+                pageContainer.classList.remove('no-header-footer');
+                window.print();
+            }
+        }
+
+        function printWithoutHeaderFooter() {
+            const pageContainer = document.querySelector('.page-container');
+            if (pageContainer) {
+                pageContainer.classList.add('no-header-footer');
+                window.removeEventListener('afterprint', restoreHeaderFooter);
+                window.addEventListener('afterprint', restoreHeaderFooter);
+                window.print();
+            }
+        }
+
+        function restoreHeaderFooter() {
+            const pageContainer = document.querySelector('.page-container');
+            if (pageContainer) pageContainer.classList.remove('no-header-footer');
+            window.removeEventListener('afterprint', restoreHeaderFooter);
+        }
+    </script>
+</body>
+</html>

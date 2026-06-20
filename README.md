@@ -1,39 +1,61 @@
-# نموذج تخويل - AL ALBAB COMPANY
+# AL ALBAB COMPANY — Disbursement & Authorization Forms
 
-نموذج تخويل قابل للتحرير يطابق التصميم الأصلي تماماً.
+نماذج صرف وتخويل قابلة للتحرير، جاهزة للطباعة وحفظ PDF من المتصفح.
 
-## الملف الرئيسي
+## الموقع المباشر (GitHub Pages)
 
-**`نموذج_تخويل_قابل_للتحرير.html`** - الملف الوحيد الذي تحتاجه!
+بعد تفعيل GitHub Pages، افتح:
+
+**https://alialq93.github.io/Disbursement-Request/**
+
+## الملفات الرئيسية
+
+| الملف | الوصف |
+|-------|--------|
+| [`index.html`](index.html) | الصفحة الرئيسية |
+| [`authorization.html`](authorization.html) | نموذج التخويل |
+| [`disbursement-request.html`](disbursement-request.html) | طلب صرف |
+| [`create-pdf.html`](create-pdf.html) | إنشاء PDF طلب صرف من المتصفح |
+| [`organize-logos.html`](organize-logos.html) | تنزيل وتنظيم شعارات الشهادات |
 
 ## طريقة الاستخدام
 
-1. افتح ملف `نموذج_تخويل_قابل_للتحرير.html` في المتصفح
-2. املأ الحقول القابلة للتحرير:
-   - التاريخ
-   - اسم المصرف
-   - اسم المخول
-   - المبلغ
-   - اسم صاحب الحساب
-   - اسم المدير المفوض
-3. اضغط **Ctrl+P** أو زر "طباعة / حفظ كـ PDF"
-4. اختر "حفظ كـ PDF" كطابعة
+1. افتح [`authorization.html`](authorization.html) أو [`disbursement-request.html`](disbursement-request.html)
+2. املأ الحقول القابلة للتحرير
+3. اضغط **Ctrl+P** أو زر الطباعة
+4. اختر **حفظ كـ PDF** كطابعة
 5. احفظ الملف
 
 ## الشعارات
 
-الشعارات موجودة في مجلد `logos`. إذا لم تظهر الشعارات:
-- افتح ملف `organize_logos.html` لتنزيل الشعارات
+الشعارات في مجلد [`logos/`](logos/). إذا لم تظهر:
+
+- افتح [`organize-logos.html`](organize-logos.html)
 - أو أضف الشعارات يدوياً في مجلد `logos`
+
+## إنشاء PDF عبر Node.js (محلي)
+
+راجع [`pdf-generation-guide.md`](pdf-generation-guide.md).
+
+```bash
+npm install
+npm run create-pdf
+```
+
+## تفعيل GitHub Pages
+
+1. ادخل إلى **Settings → Pages** في المستودع
+2. ضمن **Build and deployment**، اختر **Source: GitHub Actions**
+3. عند كل `push` إلى `main`، يُنشر الموقع تلقائياً عبر workflow `.github/workflows/pages.yml`
 
 ## المميزات
 
-- ✅ يطابق التصميم الأصلي 100%
-- ✅ حقول قابلة للتحرير مباشرة
-- ✅ حفظ تلقائي للبيانات في المتصفح
-- ✅ جاهز للطباعة وحفظ PDF
-- ✅ متوافق مع جميع المتصفحات
+- يطابق التصميم الأصلي
+- حقول قابلة للتحرير مباشرة
+- حفظ تلقائي للبيانات في المتصفح
+- جاهز للطباعة وحفظ PDF
+- متوافق مع جميع المتصفحات
 
 ---
 
-تم الإنشاء بواسطة AI Assistant
+**Repository:** https://github.com/ALIALQ93/Disbursement-Request
