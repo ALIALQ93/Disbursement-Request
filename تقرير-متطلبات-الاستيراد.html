@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقرير متطلبات الاستيراد والتحويل الخارجي — مقارنة الشركات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1b2a3a;
+    --ink-soft:#44586e;
+    --paper:#ffffff;
+    --sand:#f6f3ec;
+    --line:#d8dee6;
+    --brass:#b07d2b;
+    --brass-soft:#f3e8d3;
+    --ok:#1e7d4f;
+    --mid:#b07d2b;
+    --no:#b3392f;
+    --na:#6b7885;
+    --later:#5b4a9e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:#e9e6df}
+  body{
+    font-family:'IBM Plex Sans Arabic',Tahoma,sans-serif;
+    color:var(--ink);
+    font-size:11px;
+    line-height:1.65;
+  }
+  .page{
+    width:210mm;min-height:297mm;
+    margin:10mm auto;background:var(--paper);
+    padding:16mm 14mm 14mm;
+    box-shadow:0 2px 14px rgba(0,0,0,.12);
+    position:relative;
+    display:flex;flex-direction:column;
+  }
+
+  /* ===== شريط التحكم (لا يُطبع) ===== */
+  .toolbar{
+    width:210mm;margin:8mm auto 0;
+    background:var(--ink);color:#fff;border-radius:3px;
+    padding:3mm 5mm;display:flex;align-items:center;gap:4mm;
+    font-size:10.5px;box-shadow:0 2px 10px rgba(0,0,0,.2);
+  }
+  .toolbar .title{font-weight:700;letter-spacing:.05em}
+  .toolbar .sep{opacity:.35}
+  .toolbar button{
+    font-family:inherit;font-size:10.5px;font-weight:600;
+    background:var(--brass);color:#fff;border:none;border-radius:2px;
+    padding:1.8mm 4mm;cursor:pointer;transition:filter .15s;
+  }
+  .toolbar button:hover{filter:brightness(1.12)}
+  .toolbar button.ghost{background:transparent;border:1px solid rgba(255,255,255,.4)}
+  .toolbar .tip{margin-inline-start:auto;font-size:9px;opacity:.75}
+
+  /* ===== الترويسة ===== */
+  .masthead{
+    border-bottom:3px solid var(--ink);
+    padding-bottom:8mm;margin-bottom:7mm;
+    display:flex;justify-content:space-between;align-items:flex-end;gap:10mm;
+  }
+  .masthead .kicker{
+    font-size:9px;letter-spacing:.35em;color:var(--brass);
+    font-weight:600;margin-bottom:3mm;
+  }
+  .masthead h1{
+    font-family:'Amiri',serif;
+    font-size:26px;line-height:1.3;font-weight:700;
+  }
+  .masthead .sub{color:var(--ink-soft);margin-top:2mm;font-size:10.5px;max-width:115mm}
+  .meta{
+    text-align:left;font-size:9.5px;color:var(--ink-soft);
+    border-right:2px solid var(--brass);padding-right:4mm;min-width:42mm;
+  }
+  .meta b{color:var(--ink);display:block;font-size:10.5px}
+
+  /* ===== بطاقات الشركات ===== */
+  .companies{display:grid;gap:4mm;margin-bottom:6mm}
+  .company{
+    border:1px solid var(--line);border-radius:2px;
+    padding:3.5mm 4.5mm;position:relative;overflow:hidden;
+  }
+  .company::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:2.5mm;background:var(--cc)}
+  .company .tag{font-size:8.5px;letter-spacing:.25em;color:var(--ink-soft);font-weight:600}
+  .company h2{
+    font-family:'Amiri',serif;font-size:16px;margin-top:1mm;color:var(--cc);
+    outline:none;border-radius:2px;padding:0 1mm;min-width:20mm;display:inline-block;
+  }
+  .company h2:hover{background:var(--sand)}
+  .company h2:focus{background:var(--brass-soft);box-shadow:0 0 0 1.5px var(--brass)}
+  .company .note{font-size:9px;color:var(--ink-soft);margin-top:.5mm}
+  .company .del{
+    position:absolute;top:2.5mm;inset-inline-end:2.5mm;
+    background:transparent;border:1px solid var(--line);color:var(--no);
+    border-radius:2px;font-family:inherit;font-size:9px;font-weight:700;
+    padding:.8mm 2.5mm;cursor:pointer;transition:all .15s;
+  }
+  .company .del:hover{background:#faeceb;border-color:var(--no)}
+
+  /* ===== دليل الحالات ===== */
+  .legend{
+    display:flex;flex-wrap:wrap;gap:4mm 5mm;align-items:center;
+    background:var(--sand);border:1px solid var(--line);
+    padding:2.5mm 5mm;margin-bottom:6mm;font-size:10px;border-radius:2px;
+  }
+  .legend .t{font-weight:700;color:var(--ink)}
+  .legend span{display:flex;align-items:center;gap:1.5mm;color:var(--ink-soft)}
+  .dot{width:4mm;height:4mm;border-radius:50%;display:inline-block;border:1.5px solid}
+  .dot.ok{background:var(--ok);border-color:var(--ok)}
+  .dot.mid{background:transparent;border-color:var(--mid);position:relative}
+  .dot.mid::after{content:"";position:absolute;inset:0;background:var(--mid);border-radius:50%;clip-path:inset(0 50% 0 0)}
+  .dot.no{background:transparent;border-color:var(--no)}
+  .dot.na{background:#e4e8ec;border-color:var(--na)}
+  .dot.later{background:transparent;border-color:var(--later);position:relative}
+  .dot.later::after{content:"";position:absolute;inset:35%;background:var(--later);border-radius:50%}
+  .legend .hint{margin-inline-start:auto;font-size:9px;color:var(--brass);font-weight:600}
+
+  /* ===== الأقسام والجداول ===== */
+  section{margin-bottom:6mm;break-inside:avoid}
+  .sec-head{
+    display:flex;align-items:baseline;gap:3mm;
+    border-bottom:1.5px solid var(--ink);padding-bottom:1.5mm;
+  }
+  .sec-head .num{font-family:'Amiri',serif;font-size:15px;color:var(--brass);font-weight:700}
+  .sec-head h3{font-size:13.5px;font-weight:700}
+  .sec-head .scope{margin-inline-start:auto;font-size:9px;color:var(--ink-soft)}
+
+  table{width:100%;border-collapse:collapse;table-layout:fixed}
+  thead th{
+    font-size:9px;font-weight:600;color:var(--ink-soft);
+    padding:2mm 2mm;border-bottom:1px solid var(--line);
+    text-align:right;letter-spacing:.03em;
+  }
+  thead th.st{text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  tbody td{
+    padding:2.2mm 2mm;border-bottom:1px solid var(--line);
+    vertical-align:top;font-size:10.5px;
+  }
+  tbody tr:nth-child(even){background:#fbfaf7}
+  td .req{font-weight:600}
+  td .det{color:var(--ink-soft);font-size:9.5px;margin-top:.5mm}
+  td.st{text-align:center;vertical-align:middle}
+
+  .status{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:16mm;max-width:100%;padding:1mm 1.5mm;border-radius:2px;
+    border:1px dashed var(--line);cursor:pointer;user-select:none;
+    font-size:8.5px;color:#9aa6b2;transition:all .15s;white-space:nowrap;
+  }
+  .status:hover{border-color:var(--brass)}
+  .status[data-s="1"]{border:1px solid var(--ok);color:var(--ok);background:#eaf5ef;font-weight:700}
+  .status[data-s="2"]{border:1px solid var(--mid);color:var(--mid);background:var(--brass-soft);font-weight:700}
+  .status[data-s="3"]{border:1px solid var(--no);color:var(--no);background:#faeceb;font-weight:700}
+  .status[data-s="4"]{border:1px solid var(--na);color:var(--na);background:#f0f2f4;font-weight:700}
+  .status[data-s="5"]{border:1px solid var(--later);color:var(--later);background:#efecf8;font-weight:700}
+
+  /* ===== ملاحظات وذيل ===== */
+  .callout{
+    background:var(--sand);border-inline-start:3px solid var(--brass);
+    padding:3.5mm 5mm;font-size:10px;color:var(--ink-soft);
+    margin-bottom:6mm;border-radius:0 2px 2px 0;
+  }
+  .callout b{color:var(--ink)}
+  .flow{display:flex;flex-wrap:wrap;gap:2mm;align-items:center;font-size:9.5px;margin-top:2mm}
+  .flow .step{background:var(--paper);border:1px solid var(--line);padding:1.2mm 3mm;border-radius:10mm;white-space:nowrap}
+  .flow .arr{color:var(--brass);font-weight:700}
+
+  footer{
+    margin-top:auto;padding-top:4mm;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;
+    font-size:8.5px;color:var(--ink-soft);
+  }
+
+  /* ===== الطباعة ===== */
+  @media print{
+    html{background:#fff}
+    .toolbar,.company .del{display:none !important}
+    .page{margin:0;box-shadow:none;width:auto;min-height:auto;padding:12mm 12mm 10mm}
+    .status{cursor:default;border-style:solid}
+    .legend .hint{display:none}
+    .company h2:hover{background:transparent}
+    @page{size:A4;margin:0}
+  }
+</style>
+</head>
+<body>
+
+<!-- شريط التحكم -->
+<div class="toolbar">
+  <span class="title">لوحة التحرير</span>
+  <span class="sep">|</span>
+  <button id="add-company">+ إضافة شركة</button>
+  <button id="print-btn" class="ghost">🖨 طباعة التقرير</button>
+  <span class="tip">اضغط على اسم أي شركة لتعديله — يتحدّث الاسم في كل مواضع التقرير تلقائياً</span>
+</div>
+
+<!-- ============ الصفحة 1 ============ -->
+<div class="page">
+  <div class="masthead">
+    <div>
+      <div class="kicker">تقرير امتثال — جمهورية العراق</div>
+      <h1>متطلبات الاستيراد والتحويل الخارجي</h1>
+      <div class="sub">الشراء والاستيراد من الصين والهند والإمارات وفق ضوابط البنك المركزي العراقي ووزارة التجارة — مقارنة جاهزية شركات المجموعة</div>
+    </div>
+    <div class="meta">
+      <b>تاريخ الإعداد</b>
+      8 تموز 2026
+      <b style="margin-top:2mm">نطاق التقرير</b>
+      التسجيل • المصارف • التحويل • الكمارك
+    </div>
+  </div>
+
+  <div class="companies" id="companies"></div>
+
+  <div class="legend">
+    <span class="t">دليل الحالة:</span>
+    <span><span class="dot ok"></span> متوفر</span>
+    <span><span class="dot mid"></span> قيد الإنجاز</span>
+    <span><span class="dot no"></span> غير متوفر</span>
+    <span><span class="dot na"></span> لا حاجة</span>
+    <span><span class="dot later"></span> مؤجل</span>
+    <span class="hint">اضغط على أي خانة لتبديل الحالة قبل الطباعة</span>
+  </div>
+
+  <section data-sec="0"></section>
+  <section data-sec="1"></section>
+
+  <footer>
+    <span id="foot-1">تقرير داخلي</span>
+    <span>صفحة 1 من 2</span>
+  </footer>
+</div>
+
+<!-- ============ الصفحة 2 ============ -->
+<div class="page">
+
+  <section data-sec="2"></section>
+  <section data-sec="3"></section>
+
+  <div class="callout">
+    <b>المسار العملي المختصر لكل صفقة:</b>
+    <div class="flow">
+      <span class="step">تسجيل وإجازة استيراد</span><span class="arr">←</span>
+      <span class="step">حساب مصرفي + KYC</span><span class="arr">←</span>
+      <span class="step">فاتورة أولية وعقد من المجهّز</span><span class="arr">←</span>
+      <span class="step">طلب تحويل / اعتماد مستندي</span><span class="arr">←</span>
+      <span class="step">فحص ما قبل الشحن + شهادة المنشأ</span><span class="arr">←</span>
+      <span class="step">تخليص كمركي</span><span class="arr">←</span>
+      <span class="step">تسليم وثائق الإدخال للمصرف خلال 90 يوماً</span>
+    </div>
+  </div>
+
+  <div class="callout" style="border-inline-start-color:var(--no)">
+    <b>تنبيه امتثال:</b> يشدد البنك المركزي العراقي باستمرار تعليمات تدقيق الفواتير التجارية ومطابقتها مع المجهّز والبضاعة الفعلية. أي اختلاف بين الفاتورة والتصريح الكمركي وشهادة المنشأ قد يؤدي إلى إيقاف تحويلات الشركة. يُنصح بتوحيد اسم الشركة وعنوانها حرفياً في جميع المستندات.
+  </div>
+
+  <footer>
+    <span id="foot-2">تقرير داخلي</span>
+    <span>صفحة 2 من 2</span>
+  </footer>
+</div>
+
+<script>
+/* ================== البيانات ================== */
+const STATUS_LABELS = ['حدّد', 'متوفر ✓', 'قيد الإنجاز ◐', 'غير متوفر ✗', 'لا حاجة —', 'مؤجل ◷'];
+const STATUS_COUNT = 6;
+const PALETTE = ['#123f6d', '#7a3b12', '#1e5c46', '#5b4a9e', '#8a2f4f', '#3d6470'];
+
+let companySeq = 0;
+const companies = [
+  { id: ++companySeq, name: 'الصرح العالي' },
+  { id: ++companySeq, name: 'اليوم الجديد' },
+];
+
+const SECTIONS = [
+  {
+    num: '١', title: 'التسجيل القانوني وصفة المستورد',
+    scope: 'وزارة التجارة • غرفة التجارة • الهيئة العامة للضرائب',
+    rows: [
+      { id: 'reg-1', req: 'شهادة تأسيس الشركة', det: 'دائرة تسجيل الشركات — وزارة التجارة، مع عقد التأسيس والنظام الداخلي' },
+      { id: 'reg-2', req: 'هوية غرفة التجارة', det: 'تسجيل نافذ بدرجة مناسبة لحجم الاستيراد المخطط' },
+      { id: 'reg-3', req: 'إجازة الاستيراد / هوية المستورد', det: 'تقدَّم إلكترونياً عبر بوابة «أور» الحكومية (ur.gov.iq) — بعض السلع غير مشمولة بالشرط' },
+      { id: 'reg-4', req: 'الرقم الضريبي وبراءة الذمة', det: 'الهيئة العامة للضرائب — تطلبها المصارف والكمارك عند كل معاملة' },
+      { id: 'reg-5', req: 'الموافقات القطاعية (حسب نوع السلعة)', det: 'الصحة للأدوية والأغذية • الزراعة للمنتجات الزراعية • هيئة الاتصالات للأجهزة اللاسلكية' },
+    ]
+  },
+  {
+    num: '٢', title: 'الحساب المصرفي وقنوات التحويل الخارجي',
+    scope: 'البنك المركزي العراقي • بنوك المراسلة',
+    rows: [
+      { id: 'bank-1', req: 'حساب جاري تجاري باسم الشركة', det: 'لدى مصرف مجاز من البنك المركزي وله علاقات مراسلة فعالة' },
+      { id: 'bank-2', req: 'ملف اعرف عميلك (KYC) مكتمل', det: 'أوراق التأسيس + هوية الغرفة + إجازة الاستيراد + الرقم الضريبي + بيان مصدر الأموال' },
+      { id: 'bank-3', req: 'قناة تحويل بعملة بلد المجهّز', det: 'التحويل عبر بنوك المراسلة (بعد إيقاف المنصة الإلكترونية مطلع 2025): يوان صيني • روبية هندية • درهم إماراتي • دولار', defaultStatus: 4 },
+      { id: 'bank-4', req: 'سجل امتثال نظيف لدى المصرف', det: 'عدم وجود حوالات سابقة غير مغلقة أو مخالفات تدقيق تحجب التحويلات اللاحقة' },
+    ]
+  },
+  {
+    num: '٣', title: 'مستندات كل عملية تحويل أو اعتماد مستندي',
+    scope: 'تُقدَّم للمصرف عن كل صفقة شراء',
+    rows: [
+      { id: 'doc-1', req: 'الفاتورة الأولية (Proforma Invoice)', det: 'موقعة ومختومة من المجهّز ومعنونة إلى الشركة، بتفاصيل المواد والأسعار وحساب المستفيد' },
+      { id: 'doc-2', req: 'فاتورة تجارية حديثة', det: 'لا يتجاوز تاريخ إصدارها ثلاثة أشهر، موقعة ومختومة من الجهة المجهّزة' },
+      { id: 'doc-3', req: 'عقد توريد موقّع مع المجهّز', det: 'بين الشركة المحوِّلة والشركة المجهّزة في الصين / الهند / الإمارات' },
+      { id: 'doc-4', req: 'طلب التحويل أو طلب فتح الاعتماد', det: 'يتضمن المبلغ والمادة المستوردة ورقم حساب الشركة المجهّزة' },
+      { id: 'doc-5', req: 'تعهد بتقديم وثائق الإدخال خلال 90 يوماً', det: 'التصريح الكمركي + المنفيست + شهادة المنشأ باسم الشركة المحوِّلة لإغلاق ملف الحوالة' },
+    ]
+  },
+  {
+    num: '٤', title: 'الكمارك والفحص عند الوصول',
+    scope: 'الهيئة العامة للكمارك • الجهاز المركزي للتقييس والسيطرة النوعية',
+    rows: [
+      { id: 'cus-1', req: 'شهادة المطابقة (COC) قبل الشحن', det: 'من شركة فحص معتمدة لدى الجهاز المركزي للتقييس (مثل SGS أو Bureau Veritas) في بلد المنشأ' },
+      { id: 'cus-2', req: 'شهادة المنشأ المصدّقة', det: 'من غرفة تجارة بلد التصدير، وقد تُطلب مصادقة السفارة العراقية' },
+      { id: 'cus-3', req: 'مخلّص كمركي معتمد / وكالة تخليص', det: 'للتصريح الكمركي عبر منفذ الدخول ودفع الرسوم حسب التعرفة' },
+      { id: 'cus-4', req: 'آلية تسليم وثائق الإدخال للمصرف', det: 'خلال المهلة المحددة (90 يوماً عادة) — التأخير يعرّض الشركة للمساءلة والحجب عن التحويلات' },
+    ]
+  },
+];
+
+/* الحالات محفوظة بمفتاح: companyId|rowId — لا تضيع عند إضافة/حذف الشركات */
+const statuses = {};
+function getStatus(cid, rid) {
+  const key = cid + '|' + rid;
+  if (!(key in statuses)) {
+    const row = SECTIONS.flatMap(s => s.rows).find(r => r.id === rid);
+    statuses[key] = row && row.defaultStatus != null ? row.defaultStatus : 0;
+  }
+  return statuses[key];
+}
+function setStatus(cid, rid, val) { statuses[cid + '|' + rid] = val; }
+function colorOf(index) { return PALETTE[index % PALETTE.length]; }
+const ORDINALS = ['الأولى','الثانية','الثالثة','الرابعة','الخامسة','السادسة','السابعة','الثامنة'];
+
+/* ================== العرض ================== */
+function render() {
+  renderCompanies();
+  SECTIONS.forEach((sec, i) => renderSection(sec, i));
+  renderFooters();
+}
+
+function renderCompanies() {
+  const wrap = document.getElementById('companies');
+  wrap.innerHTML = '';
+  wrap.style.gridTemplateColumns = 'repeat(' + Math.min(companies.length, 3) + ', 1fr)';
+  companies.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'company';
+    div.style.setProperty('--cc', colorOf(i));
+    div.innerHTML =
+      '<div class="tag">الشركة ' + (ORDINALS[i] || (i + 1)) + '</div>' +
+      '<h2 contenteditable="true" spellcheck="false" data-cid="' + c.id + '" title="اضغط لتعديل الاسم">' + escapeHtml(c.name) + '</h2>' +
+      '<div class="note">حالة الجاهزية تُعبّأ في عمود الشركة لكل بند</div>' +
+      (companies.length > 1 ? '<button class="del" data-cid="' + c.id + '" title="حذف الشركة">✕ حذف</button>' : '');
+    wrap.appendChild(div);
+  });
+
+  // تعديل الاسم — ينعكس في كل الملف عند الانتهاء
+  wrap.querySelectorAll('h2[contenteditable]').forEach(h => {
+    h.addEventListener('blur', () => {
+      const c = companies.find(x => x.id == h.dataset.cid);
+      const name = h.textContent.trim();
+      if (name) c.name = name; 
+      render();
+    });
+    h.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); h.blur(); } });
+  });
+
+  // حذف شركة
+  wrap.querySelectorAll('.del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const c = companies.find(x => x.id == btn.dataset.cid);
+      if (confirm('حذف شركة «' + c.name + '» من التقرير؟')) {
+        companies.splice(companies.indexOf(c), 1);
+        render();
+      }
+    });
+  });
+}
+
+function renderSection(sec, index) {
+  const el = document.querySelector('section[data-sec="' + index + '"]');
+  const colW = companies.length <= 2 ? 26 : companies.length === 3 ? 22 : 18;
+  let html =
+    '<div class="sec-head"><span class="num">' + sec.num + '</span><h3>' + sec.title + '</h3>' +
+    '<span class="scope">' + sec.scope + '</span></div>' +
+    '<table><thead><tr><th>المتطلب</th>';
+  companies.forEach((c, i) => {
+    html += '<th class="st" style="width:' + colW + 'mm;color:' + colorOf(i) + '">' + escapeHtml(c.name) + '</th>';
+  });
+  html += '</tr></thead><tbody>';
+  sec.rows.forEach(row => {
+    html += '<tr><td><div class="req">' + row.req + '</div><div class="det">' + row.det + '</div></td>';
+    companies.forEach(c => {
+      const s = getStatus(c.id, row.id);
+      html += '<td class="st"><span class="status" data-s="' + s + '" data-cid="' + c.id + '" data-rid="' + row.id + '">' + STATUS_LABELS[s] + '</span></td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+
+  el.querySelectorAll('.status').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const next = (parseInt(cell.dataset.s) + 1) % STATUS_COUNT;
+      cell.dataset.s = next;
+      cell.textContent = STATUS_LABELS[next];
+      setStatus(cell.dataset.cid, cell.dataset.rid, next);
+    });
+  });
+}
+
+function renderFooters() {
+  const names = companies.map(c => c.name).join(' / ');
+  document.getElementById('foot-1').textContent = 'تقرير داخلي — ' + names;
+  document.getElementById('foot-2').textContent = 'تقرير داخلي — ' + names;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/* ================== الأزرار ================== */
+document.getElementById('add-company').addEventListener('click', () => {
+  if (companies.length >= 6) { alert('الحد الأقصى 6 شركات للحفاظ على وضوح جدول A4.'); return; }
+  const name = prompt('اسم الشركة الجديدة:', 'شركة جديدة');
+  if (name === null) return;
+  companies.push({ id: ++companySeq, name: name.trim() || 'شركة جديدة' });
+  render();
+});
+document.getElementById('print-btn').addEventListener('click', () => window.print());
+
+render();
+</script>
+
+</body>
+</html>
