@@ -4,120 +4,246 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AL ALBAB COMPANY — نماذج الصرف والتخويل</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --navy: #0f1c4d;
+            --navy-mid: #1a237e;
+            --navy-soft: #eef1fb;
+            --red: #c62828;
+            --ink: #1b2430;
+            --muted: #5c6b7a;
+            --line: #d9e0ea;
+            --paper: #ffffff;
+            --bg: #f3f5f9;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-            direction: rtl;
-            text-align: right;
+            font-family: 'IBM Plex Sans Arabic', Tahoma, sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #e8eaf6 0%, #fce4ec 100%);
-            color: #1a237e;
-            padding: 24px;
+            color: var(--ink);
+            background:
+                radial-gradient(ellipse 80% 50% at 100% 0%, rgba(26, 35, 126, 0.08), transparent 55%),
+                radial-gradient(ellipse 60% 40% at 0% 100%, rgba(198, 40, 40, 0.06), transparent 50%),
+                linear-gradient(180deg, #f7f8fc 0%, var(--bg) 100%);
+            padding: 28px 20px 40px;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1080px;
             margin: 0 auto;
         }
 
         .header {
-            text-align: center;
-            background: white;
-            border: 3px solid #1a237e;
-            border-radius: 12px;
-            padding: 32px 24px;
-            box-shadow: 0 8px 24px rgba(26, 35, 126, 0.12);
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 22px;
+            align-items: center;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 28px 30px;
             margin-bottom: 28px;
+            box-shadow: 0 10px 30px rgba(15, 28, 77, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 5px;
+            background: linear-gradient(180deg, var(--navy-mid), var(--red));
         }
 
         .header img {
-            width: 120px;
-            height: 120px;
+            width: 88px;
+            height: 88px;
             object-fit: contain;
-            margin-bottom: 16px;
+        }
+
+        .brand-kicker {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            color: var(--red);
+            margin-bottom: 6px;
+            text-transform: uppercase;
         }
 
         .header h1 {
-            font-size: 1.75rem;
+            font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+            color: var(--navy);
+            font-weight: 700;
+            line-height: 1.25;
             margin-bottom: 8px;
         }
 
         .header p {
-            color: #555;
+            color: var(--muted);
             line-height: 1.7;
+            max-width: 52ch;
+            font-size: 0.98rem;
+        }
+
+        .section-label {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-label h2 {
+            font-size: 1.05rem;
+            color: var(--navy);
+            font-weight: 600;
+        }
+
+        .section-label span {
+            color: var(--muted);
+            font-size: 0.85rem;
         }
 
         .cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
-            border-top: 4px solid #dc143c;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            padding: 24px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 22px 22px 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 190px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 4px 16px rgba(15, 28, 77, 0.04);
         }
 
         .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+            border-color: #b8c3de;
+            box-shadow: 0 14px 32px rgba(15, 28, 77, 0.1);
+            transform: translateY(-3px);
         }
 
-        .card h2 {
-            font-size: 1.25rem;
-            margin-bottom: 10px;
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: var(--navy-soft);
+            color: var(--navy-mid);
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .card-icon.is-accent {
+            background: #fdecea;
+            color: var(--red);
+        }
+
+        .card-icon.is-secure {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .card h3 {
+            font-size: 1.12rem;
+            color: var(--navy);
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
         .card p {
-            color: #666;
-            line-height: 1.6;
+            color: var(--muted);
+            line-height: 1.65;
+            font-size: 0.92rem;
+            flex: 1;
             margin-bottom: 18px;
-            min-height: 48px;
         }
 
         .btn {
-            display: inline-block;
-            background: #1a237e;
-            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--navy-mid);
+            color: #fff;
             text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 11px 16px;
+            border-radius: 10px;
             font-weight: 600;
-            transition: background 0.2s ease;
+            font-size: 0.92rem;
+            transition: background 0.2s ease, transform 0.15s ease;
+            width: fit-content;
         }
 
         .btn:hover {
-            background: #283593;
+            background: var(--navy);
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background: #ff6b35;
+            background: var(--red);
         }
 
         .btn-secondary:hover {
-            background: #e55a2b;
+            background: #a31f1f;
         }
 
         .footer {
             text-align: center;
-            color: #666;
+            color: var(--muted);
             font-size: 0.9rem;
-            line-height: 1.8;
+            padding-top: 4px;
+            border-top: 1px solid transparent;
         }
 
-        .footer a {
-            color: #1a237e;
+        .footer-inner {
+            display: inline-flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 14px 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--line);
+        }
+
+        @media (max-width: 760px) {
+            .header {
+                grid-template-columns: 1fr;
+                text-align: center;
+                justify-items: center;
+                padding: 24px 20px;
+            }
+
+            .header::before {
+                inset: 0 0 auto 0;
+                width: 100%;
+                height: 4px;
+            }
+
+            .header p { max-width: none; }
+            .cards { grid-template-columns: 1fr; }
+            .card { min-height: 0; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
@@ -125,42 +251,60 @@
     <div class="container">
         <header class="header">
             <img src="ALBAB_Company_300x300_white_bg.png" alt="AL ALBAB COMPANY Logo">
-            <h1>AL ALBAB COMPANY</h1>
-            <p>نماذج وتقارير الشركة — قابلة للتحرير والطباعة وحفظ PDF من المتصفح</p>
+            <div>
+                <div class="brand-kicker">AL ALBAB COMPANY</div>
+                <h1>بوابة النماذج والتقارير</h1>
+                <p>نماذج رسمية قابلة للتحرير والطباعة وحفظ PDF — مع تسجيل طلبات الصرف واستعراضها بصلاحيات محددة.</p>
+            </div>
         </header>
+
+        <div class="section-label">
+            <h2>الخدمات المتاحة</h2>
+            <span>اختر النموذج المطلوب</span>
+        </div>
 
         <section class="cards">
             <article class="card">
-                <h2>نموذج التخويل</h2>
-                <p>نموذج تخويل رسمي لمخول بالتوقيع والتعامل مع المصرف.</p>
-                <a class="btn" href="authorization.html">فتح نموذج التخويل</a>
+                <div class="card-top">
+                    <div class="card-icon">ت</div>
+                </div>
+                <h3>نموذج التخويل</h3>
+                <p>تخويل رسمي للمفوّض بالتوقيع والتعامل مع المصرف وفق صيغ الشركة المعتمدة.</p>
+                <a class="btn" href="authorization.html">فتح النموذج</a>
             </article>
 
             <article class="card">
-                <h2>طلب صرف</h2>
-                <p>نموذج طلب صرف مالي مطابق للتصميم الرسمي للشركة.</p>
+                <div class="card-top">
+                    <div class="card-icon">ص</div>
+                </div>
+                <h3>طلب صرف</h3>
+                <p>إعداد طلب الصرف المالي وتسجيله برقم تسلسلي فريد قبل الطباعة.</p>
                 <a class="btn" href="disbursement-request.html">فتح طلب الصرف</a>
             </article>
 
             <article class="card">
-                <h2>تقرير متطلبات الاستيراد</h2>
-                <p>مقارنة جاهزية شركات المجموعة لمتطلبات الاستيراد والتحويل الخارجي وفق ضوابط البنك المركزي ووزارة التجارة.</p>
+                <div class="card-top">
+                    <div class="card-icon is-accent">ا</div>
+                </div>
+                <h3>تقرير متطلبات الاستيراد</h3>
+                <p>مقارنة جاهزية شركات المجموعة لمتطلبات الاستيراد والتحويل الخارجي.</p>
                 <a class="btn btn-secondary" href="تقرير-متطلبات-الاستيراد.html">فتح التقرير</a>
             </article>
 
             <article class="card">
-                <h2>الطلبات السابقة</h2>
-                <p>استعراض طلبات الصرف المسجّلة — محمي بكلمة مرور للصلاحيات المحددة فقط.</p>
-                <a class="btn" href="previous-requests.html">فتح الطلبات السابقة</a>
+                <div class="card-top">
+                    <div class="card-icon is-secure">س</div>
+                </div>
+                <h3>الطلبات السابقة</h3>
+                <p>استعراض الطلبات المسجّلة بعد التحقق بكلمة مرور للصلاحيات المخوّلة فقط.</p>
+                <a class="btn" href="previous-requests.html">دخول محمي</a>
             </article>
         </section>
 
         <footer class="footer">
-            <div>AL-Karada Dakhel, Baghdad, Iraq</div>
-            <div>
-                <a href="mailto:info@albab.com.iq">info@albab.com.iq</a>
-                ·
-                <a href="http://www.albab.com.iq" target="_blank" rel="noopener">www.albab.com.iq</a>
+            <div class="footer-inner">
+                <div>AL ALBAB COMPANY</div>
+                <div>AL-Karada Dakhel, Baghdad, Iraq</div>
             </div>
         </footer>
     </div>
