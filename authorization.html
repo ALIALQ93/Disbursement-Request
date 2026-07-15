@@ -567,8 +567,10 @@
             .page-container {
                 box-shadow: none;
                 margin: 0;
-                width: 210mm;
-                height: 297mm;
+                width: 210mm !important;
+                height: 297mm !important;
+                min-height: 297mm !important;
+                max-height: 297mm !important;
             }
             
             .print-button,
@@ -713,6 +715,7 @@
             page-break-inside: avoid;
         }
     </style>
+    <link rel="stylesheet" href="mobile-shared.css">
 </head>
 <body data-gate-id="authorization">
 <script src="access-passwords.js"></script>

@@ -57,6 +57,12 @@
       '#albabPageGate .gate-error{display:none;background:#ffebee;color:#b71c1c;border:1px solid #ef9a9a;' +
       'border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:.9rem;}' +
       '#albabPageGate .gate-error.is-visible{display:block;}' +
+      '@media (max-width:700px){' +
+      '#albabPageGate{padding:16px 12px;align-items:flex-start;padding-top:48px;}' +
+      '#albabPageGate .gate-card{padding:22px 16px;border-radius:14px;}' +
+      '#albabPageGate .gate-actions{flex-direction:column;}' +
+      '#albabPageGate button,#albabPageGate a{width:100%;}' +
+      '}' +
       '@media print{#albabPageGate{display:none !important;}}';
     document.head.appendChild(style);
   }

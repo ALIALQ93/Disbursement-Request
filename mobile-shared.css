@@ -1,0 +1,209 @@
+/**
+ * Mobile layout for A4 form pages (screen only — print stays A4).
+ * Include after page styles: <link rel="stylesheet" href="mobile-shared.css">
+ */
+@media screen and (max-width: 920px) {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    padding: 10px 8px 150px !important;
+    overflow-x: hidden;
+  }
+
+  .print-viewport {
+    width: 100% !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .page-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+  }
+
+  .page-border {
+    border-width: 2mm !important;
+  }
+
+  .content-area {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 14px 12px 16px !important;
+    display: block !important;
+  }
+
+  .header {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .header-content {
+    align-items: center !important;
+    padding: 0 !important;
+    text-align: center !important;
+    width: 100%;
+  }
+
+  body[dir="ltr"] .header-content {
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .logo-container {
+    order: 0 !important;
+    width: 100%;
+    justify-content: center !important;
+  }
+
+  .logo-image {
+    width: 88px !important;
+    margin: 0 auto;
+  }
+
+  .company-name { font-size: 16px !important; letter-spacing: 1px !important; }
+  .company-subtitle { font-size: 9px !important; }
+  .company-name-ar { font-size: 12px !important; }
+
+  .language-selector,
+  .template-selector,
+  .serial-number,
+  .date-recipient,
+  .subject {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .serial-number input,
+  .serial-input,
+  .language-select,
+  .template-select,
+  input[type="date"],
+  .editable-field {
+    max-width: 100% !important;
+    font-size: 15px !important;
+  }
+
+  .generate-serial-btn {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .date-recipient {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .date-field,
+  .recipient-field {
+    width: 100% !important;
+  }
+
+  .table-scroll {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -4px;
+    padding: 0 4px;
+  }
+
+  .request-table {
+    min-width: 520px;
+    font-size: 13px !important;
+  }
+
+  .signatures-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px !important;
+    width: 100% !important;
+  }
+
+  .signature-row {
+    max-width: none !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .footer-content {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 10px !important;
+  }
+
+  .footer-info {
+    text-align: center !important;
+    min-width: 0 !important;
+    font-size: 11px !important;
+  }
+
+  .footer-logos {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+
+  .cert-logo {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .print-buttons-container {
+    position: fixed !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    top: auto !important;
+    transform: none !important;
+    width: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    z-index: 1000;
+    max-height: 46vh;
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  .print-button,
+  .register-button,
+  .print-buttons-container a.register-button {
+    width: 100% !important;
+    padding: 12px 14px !important;
+    font-size: 14px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important;
+    border-radius: 10px !important;
+    justify-content: center;
+  }
+
+  .register-status {
+    left: 8px !important;
+    right: 8px !important;
+    bottom: calc(8px + min(46vh, 220px)) !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: none !important;
+    font-size: 13px !important;
+  }
+
+  .add-row-btn {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .signatures-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .company-name { font-size: 15px !important; }
+}

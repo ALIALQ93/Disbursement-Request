@@ -244,10 +244,43 @@
             color: var(--navy-mid);
         }
         @media (max-width: 700px) {
-            .login-box { margin-top: 20px; }
+            body { padding: 14px 12px 28px; }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .link-home { text-align: center; }
+            .login-box { margin-top: 12px; }
+            .card {
+                padding: 22px 16px;
+                border-radius: 14px;
+            }
+            .card::before {
+                inset: 0 0 auto 0;
+                width: 100%;
+                height: 4px;
+            }
             .toolbar { flex-direction: column; }
-            .actions { width: 100%; }
-            .btn { flex: 1; }
+            .actions {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+            .user-chip {
+                grid-column: 1 / -1;
+                text-align: center;
+            }
+            .btn { width: 100%; }
+            .actions a.btn { grid-column: 1 / -1; }
+            table { min-width: 720px; font-size: 0.84rem; }
+            th, td { padding: 10px 8px; }
+        }
+
+        @media (max-width: 420px) {
+            .actions {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
     <script src="access-passwords.js"></script>
