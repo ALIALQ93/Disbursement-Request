@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الطلبات السابقة — AL ALBAB COMPANY</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e8eaf6 0%, #fce4ec 100%);
+            color: #1a237e;
+            padding: 24px;
+        }
+        .wrap { max-width: 1100px; margin: 0 auto; }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            border-top: 4px solid #dc143c;
+            box-shadow: 0 8px 24px rgba(26, 35, 126, 0.12);
+            padding: 28px 24px;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 1.45rem; margin-bottom: 8px; }
+        .sub { color: #555; margin-bottom: 18px; line-height: 1.6; }
+        .login-box { max-width: 420px; margin: 40px auto; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; }
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #c5cae9;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 14px;
+        }
+        .btn {
+            display: inline-block;
+            background: #1a237e;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            text-decoration: none;
+        }
+        .btn:hover { background: #283593; }
+        .btn-secondary { background: #455a64; }
+        .btn-secondary:hover { background: #37474f; }
+        .btn:disabled { background: #9e9e9e; cursor: not-allowed; }
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .error {
+            display: none;
+            background: #ffebee;
+            color: #b71c1c;
+            border: 1px solid #ef9a9a;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+        }
+        .error.is-visible { display: block; }
+        .info {
+            display: none;
+            background: #e8eaf6;
+            color: #1a237e;
+            border: 1px solid #c5cae9;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+        }
+        .info.is-visible { display: block; }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .user-chip {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .table-scroll { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 10px 8px;
+            text-align: right;
+            vertical-align: top;
+        }
+        th {
+            background: #1a237e;
+            color: #fff;
+            white-space: nowrap;
+        }
+        tr:nth-child(even) { background: #f8f9fc; }
+        .empty { color: #666; padding: 20px 0; text-align: center; }
+        .hidden { display: none !important; }
+        .hint { font-size: 0.85rem; color: #666; margin-top: 12px; line-height: 1.5; }
+    </style>
+    <script src="access-passwords.js"></script>
+</head>
+<body>
+    <div class="wrap">
+        <section id="loginPanel" class="card login-box">
+            <h1>الطلبات السابقة</h1>
+            <p class="sub">هذه الصفحة محمية. أدخل كلمة المرور المعتمدة للاطلاع على الطلبات المسجّلة.</p>
+            <div id="loginError" class="error"></div>
+            <form id="loginForm">
+                <label for="accessPassword">كلمة المرور</label>
+                <input type="password" id="accessPassword" autocomplete="current-password" required>
+                <div class="actions">
+                    <button type="submit" class="btn" id="loginBtn">دخول</button>
+                    <a class="btn btn-secondary" href="disbursement-request.html">العودة لطلب الصرف</a>
+                </div>
+            </form>
+            <p class="hint">تُدار كلمات المرور من ملف <code>access-passwords.js</code> ويجب مطابقتها في سكربت Google.</p>
+        </section>
+
+        <section id="viewerPanel" class="card hidden">
+            <div class="toolbar">
+                <div>
+                    <h1>الطلبات السابقة</h1>
+                    <p class="sub" style="margin-bottom:0;">عرض الطلبات المسجّلة في Google Sheets</p>
+                </div>
+                <div class="actions">
+                    <span id="userChip" class="user-chip"></span>
+                    <button type="button" class="btn" id="refreshBtn">تحديث</button>
+                    <button type="button" class="btn btn-secondary" id="logoutBtn">خروج</button>
+                    <a class="btn btn-secondary" href="disbursement-request.html">طلب صرف</a>
+                </div>
+            </div>
+            <div id="viewerInfo" class="info"></div>
+            <div id="viewerError" class="error"></div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الرقم التسلسلي</th>
+                            <th>التاريخ</th>
+                            <th>إلى</th>
+                            <th>الموضوع</th>
+                            <th>الإجماليات</th>
+                            <th>ملاحظات</th>
+                            <th>وقت التسجيل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsBody">
+                        <tr><td colspan="8" class="empty">جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrAxQejXvlGBmAoJ-IRWZnOakLLkzamINTeB4zO6MxNp1ARNWycWmbVFE61M34OsmrQw/exec';
+        const SESSION_KEY = 'disbursement_access_session';
+
+        const loginPanel = document.getElementById('loginPanel');
+        const viewerPanel = document.getElementById('viewerPanel');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const viewerError = document.getElementById('viewerError');
+        const viewerInfo = document.getElementById('viewerInfo');
+        const requestsBody = document.getElementById('requestsBody');
+        const userChip = document.getElementById('userChip');
+
+        function getPasswords() {
+            return Array.isArray(window.ACCESS_PASSWORDS) ? window.ACCESS_PASSWORDS : [];
+        }
+
+        function findAccess(password) {
+            const value = String(password || '').trim();
+            return getPasswords().find(function(item) {
+                return String(item.password || '') === value;
+            }) || null;
+        }
+
+        function getSession() {
+            try {
+                const raw = sessionStorage.getItem(SESSION_KEY);
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function setSession(session) {
+            sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+        }
+
+        function clearSession() {
+            sessionStorage.removeItem(SESSION_KEY);
+        }
+
+        function showError(el, message) {
+            el.textContent = message || '';
+            el.classList.toggle('is-visible', !!message);
+        }
+
+        function showInfo(el, message) {
+            el.textContent = message || '';
+            el.classList.toggle('is-visible', !!message);
+        }
+
+        function showLogin() {
+            loginPanel.classList.remove('hidden');
+            viewerPanel.classList.add('hidden');
+        }
+
+        function showViewer(session) {
+            loginPanel.classList.add('hidden');
+            viewerPanel.classList.remove('hidden');
+            userChip.textContent = 'المستخدم: ' + (session.name || 'مصرّح');
+            loadRequests(session);
+        }
+
+        function callScript(action, payload) {
+            const body = Object.assign({ action: action }, payload || {});
+            return fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(body),
+                redirect: 'follow'
+            }).then(function(res) {
+                return res.text().then(function(text) {
+                    try {
+                        return JSON.parse(text);
+                    } catch (err) {
+                        throw new Error('INVALID_RESPONSE');
+                    }
+                });
+            });
+        }
+
+        function formatTimestamp(value) {
+            if (!value) return '—';
+            try {
+                const d = new Date(value);
+                if (isNaN(d.getTime())) return String(value);
+                return d.toLocaleString('ar-IQ');
+            } catch (e) {
+                return String(value);
+            }
+        }
+
+        function renderRows(rows) {
+            if (!rows || !rows.length) {
+                requestsBody.innerHTML = '<tr><td colspan="8" class="empty">لا توجد طلبات مسجّلة بعد.</td></tr>';
+                return;
+            }
+            requestsBody.innerHTML = rows.map(function(row, index) {
+                return '<tr>' +
+                    '<td>' + (index + 1) + '</td>' +
+                    '<td>' + escapeHtml(row.serial || '—') + '</td>' +
+                    '<td>' + escapeHtml(row.date || '—') + '</td>' +
+                    '<td>' + escapeHtml(row.recipient || '—') + '</td>' +
+                    '<td>' + escapeHtml(row.subject || '—') + '</td>' +
+                    '<td>' + escapeHtml(row.totals || '—') + '</td>' +
+                    '<td>' + escapeHtml(row.notes || '—') + '</td>' +
+                    '<td>' + escapeHtml(formatTimestamp(row.timestamp)) + '</td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function loadRequests(session) {
+            showError(viewerError, '');
+            showInfo(viewerInfo, 'جاري جلب الطلبات...');
+            requestsBody.innerHTML = '<tr><td colspan="8" class="empty">جاري التحميل...</td></tr>';
+
+            callScript('list', {
+                password: session.password,
+                limit: 100
+            }).then(function(result) {
+                if (!result || !result.ok) {
+                    if (result && result.error === 'UNAUTHORIZED') {
+                        clearSession();
+                        showLogin();
+                        showError(loginError, 'انتهت الجلسة أو كلمة المرور غير مطابقة في السكربت. حدّث Code.gs وأعد النشر.');
+                        return;
+                    }
+                    showInfo(viewerInfo, '');
+                    showError(viewerError, (result && result.message) || 'تعذّر جلب الطلبات.');
+                    return;
+                }
+                showInfo(viewerInfo, 'عدد الطلبات: ' + (result.rows || []).length);
+                renderRows(result.rows || []);
+            }).catch(function() {
+                showInfo(viewerInfo, '');
+                showError(viewerError, 'تعذّر الاتصال بـ Google Apps Script. تأكد من نشر أحدث نسخة.');
+            });
+        }
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            showError(loginError, '');
+
+            if (!getPasswords().length) {
+                showError(loginError, 'ملف access-passwords.js غير موجود أو فارغ.');
+                return;
+            }
+
+            const password = document.getElementById('accessPassword').value;
+            const access = findAccess(password);
+            if (!access) {
+                showError(loginError, 'كلمة المرور غير صحيحة.');
+                return;
+            }
+
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+
+            callScript('verifyAccess', { password: password })
+                .then(function(result) {
+                    if (!result || !result.ok) {
+                        showError(loginError, 'كلمة المرور غير مطابقة في السكربت. انسخها إلى Code.gs ثم Deploy من جديد.');
+                        return;
+                    }
+                    const session = {
+                        name: access.name || result.name || 'مصرّح',
+                        password: password,
+                        at: Date.now()
+                    };
+                    setSession(session);
+                    document.getElementById('accessPassword').value = '';
+                    showViewer(session);
+                })
+                .catch(function() {
+                    showError(loginError, 'تعذّر التحقق من السكربت. حدّث Code.gs وانشره ثم أعد المحاولة.');
+                })
+                .finally(function() {
+                    loginBtn.disabled = false;
+                });
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            clearSession();
+            showLogin();
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            const session = getSession();
+            if (session) loadRequests(session);
+        });
+
+        (function init() {
+            if (!getPasswords().length) {
+                showError(loginError, 'أنشئ ملف access-passwords.js من المثال access-passwords.example.js');
+            }
+            const session = getSession();
+            if (session && session.password && findAccess(session.password)) {
+                showViewer(session);
+            } else {
+                showLogin();
+            }
+        })();
+    </script>
+</body>
+</html>

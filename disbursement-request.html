@@ -1031,7 +1031,7 @@
         <button type="button" class="register-button" id="registerRequestBtn" onclick="registerDisbursementRequest()">📝 تسجيل الطلب</button>
         <button type="button" class="print-button" id="printWithHeaderBtn" onclick="printWithHeaderFooter()" disabled title="يجب تسجيل الطلب أولاً">🖨️ طباعة مع الرأس والتذييل</button>
         <button type="button" class="print-button" id="printWithoutHeaderBtn" onclick="printWithoutHeaderFooter()" disabled style="background: #ff6b35;" title="يجب تسجيل الطلب أولاً">🖨️ طباعة بدون رأس وتذييل</button>
-        <a class="register-button" id="viewSheetBtn" href="https://docs.google.com/spreadsheets/d/1hewjE24Lhxvis6yJVKWK_ZRsWzajHMzlXQJ9jT9LiBk/edit?usp=sharing" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center;background:#455a64;">📋 الطلبات السابقة</a>
+        <a class="register-button" id="viewSheetBtn" href="previous-requests.html" style="text-decoration:none;display:inline-flex;align-items:center;background:#455a64;">📋 الطلبات السابقة</a>
     </div>
 
     <script>
@@ -1910,7 +1910,7 @@
                         registeredSnapshot = buildFormSnapshot();
                         updatePrintLockUI();
                         setRegisterStatus(
-                            tMsg('registerOk') + ' <a href="' + SHEETS_VIEW_URL + '" target="_blank" rel="noopener">' + tMsg('viewPrevious') + '</a>',
+                            tMsg('registerOk') + ' <a href="previous-requests.html">' + tMsg('viewPrevious') + '</a>',
                             'ok'
                         );
                         clearRegisterStatusSoon(8000);

@@ -14,6 +14,15 @@
 var SPREADSHEET_ID = '1hewjE24Lhxvis6yJVKWK_ZRsWzajHMzlXQJ9jT9LiBk';
 var SHEET_NAME = 'Requests';
 
+/**
+ * Must match passwords in access-passwords.js
+ * After changing: Save → Deploy → Manage deployments → Edit → New version
+ */
+var ACCESS_PASSWORDS = [
+  { name: 'الإدارة', password: 'AlbabAdmin2026' },
+  { name: 'الحسابات', password: 'AlbabAccounts2026' }
+];
+
 var HEADERS = [
   'Timestamp',
   'Serial',
@@ -53,6 +62,7 @@ function handleRequest(e) {
     }
 
     var action = String(params.action || body.action || '').trim();
+    var password = String(params.password || body.password || '').trim();
 
     if (action === 'nextSerial') {
       return jsonOut({ ok: true, serial: getNextSerial() });
@@ -64,7 +74,18 @@ function handleRequest(e) {
       return jsonOut({ ok: true, serial: checkSerial, exists: exists });
     }
 
+    if (action === 'verifyAccess') {
+      var access = findAccess_(password);
+      if (!access) {
+        return jsonOut({ ok: false, error: 'UNAUTHORIZED', message: 'Invalid password' });
+      }
+      return jsonOut({ ok: true, name: access.name || 'Authorized' });
+    }
+
     if (action === 'list') {
+      if (!findAccess_(password)) {
+        return jsonOut({ ok: false, error: 'UNAUTHORIZED', message: 'Invalid password' });
+      }
       return jsonOut({ ok: true, rows: listRequests(Number(params.limit || body.limit || 50)) });
     }
 
@@ -76,10 +97,21 @@ function handleRequest(e) {
       return jsonOut(registerRequest(payload));
     }
 
-    return jsonOut({ ok: false, error: 'Unknown action. Use nextSerial, checkSerial, register, or list.' });
+    return jsonOut({ ok: false, error: 'Unknown action. Use nextSerial, checkSerial, verifyAccess, register, or list.' });
   } catch (err) {
     return jsonOut({ ok: false, error: String(err && err.message ? err.message : err) });
   }
+}
+
+function findAccess_(password) {
+  var value = String(password || '').trim();
+  if (!value) return null;
+  for (var i = 0; i < ACCESS_PASSWORDS.length; i++) {
+    if (String(ACCESS_PASSWORDS[i].password || '') === value) {
+      return ACCESS_PASSWORDS[i];
+    }
+  }
+  return null;
 }
 
 function getSheet_() {
