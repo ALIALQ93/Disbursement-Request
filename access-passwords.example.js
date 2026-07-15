@@ -12,3 +12,5 @@ window.ACCESS_PASSWORDS = [
     password: 'CHANGE_ME_ACCOUNTS'
   }
 ];
+
+window.DOCUMENT_PASSWORD = '20112011';
