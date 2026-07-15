@@ -606,7 +606,21 @@
             .company-name-ar { font-size: 13px !important; }
 
             .language-selector, .print-button, .print-buttons-container,
+            .register-button, .register-status, .serial-registered-badge,
             .no-print, .generate-serial-btn { display: none !important; }
+
+            body.print-blocked .print-viewport {
+                display: none !important;
+            }
+            body.print-blocked::after {
+                content: 'يجب تسجيل الطلب قبل الطباعة / Register the request before printing';
+                display: block;
+                padding: 40mm 20mm;
+                font-size: 18px;
+                text-align: center;
+                color: #b71c1c;
+                font-family: Arial, Tahoma, sans-serif;
+            }
 
             .serial-number, .date-recipient {
                 margin: 2mm 0 !important;
@@ -831,6 +845,67 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
         .print-button[style*="background: #ff6b35"]:hover { background: #e55a2b !important; }
+        .print-button:disabled,
+        .print-button.is-disabled {
+            background: #9e9e9e !important;
+            cursor: not-allowed;
+            opacity: 0.65;
+            transform: none !important;
+            box-shadow: none;
+        }
+        .print-button:disabled:hover,
+        .print-button.is-disabled:hover {
+            background: #9e9e9e !important;
+            transform: none !important;
+        }
+        .register-button {
+            background: #1a237e;
+            color: white;
+            padding: 15px 32px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+        }
+        .register-button:hover { background: #283593; transform: translateY(-2px); }
+        .register-button:disabled {
+            background: #9e9e9e;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .register-status {
+            position: fixed;
+            bottom: 95px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            max-width: 92vw;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Arial', 'Tahoma', sans-serif;
+            text-align: center;
+            display: none;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+        }
+        .register-status.is-visible { display: block; }
+        .register-status.is-ok { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+        .register-status.is-error { background: #ffebee; color: #b71c1c; border: 1px solid #ef9a9a; }
+        .register-status.is-info { background: #e8eaf6; color: #1a237e; border: 1px solid #c5cae9; }
+        .register-status a { color: inherit; font-weight: bold; }
+        .serial-registered-badge {
+            display: none;
+            margin-inline-start: 8px;
+            font-size: 12px;
+            color: #1b5e20;
+            font-weight: bold;
+        }
+        .serial-registered-badge.is-visible { display: inline; }
         .content-area { page-break-inside: auto; }
     </style>
 </head>
@@ -860,8 +935,9 @@
 
             <div class="serial-number">
                 <strong>الرقم التسلسلي:</strong>
-                <input type="text" id="serialNumber" class="serial-input" placeholder="26-06-14">
+                <input type="text" id="serialNumber" class="serial-input" placeholder="26-07-15-001" readonly>
                 <button type="button" class="generate-serial-btn" onclick="generateSerialNumber()">توليد تلقائي</button>
+                <span id="serialRegisteredBadge" class="serial-registered-badge">✓ مسجّل</span>
             </div>
 
             <div class="date-recipient">
@@ -950,9 +1026,12 @@
     </div>
     </div>
 
+    <div id="registerStatus" class="register-status" role="status" aria-live="polite"></div>
     <div class="print-buttons-container">
-        <button class="print-button" onclick="printWithHeaderFooter()" title="طباعة النموذج مع الرأس والتذييل">🖨️ طباعة مع الرأس والتذييل</button>
-        <button class="print-button" onclick="printWithoutHeaderFooter()" style="background: #ff6b35;" title="طباعة النموذج بدون الرأس والتذييل">🖨️ طباعة بدون رأس وتذييل</button>
+        <button type="button" class="register-button" id="registerRequestBtn" onclick="registerDisbursementRequest()">📝 تسجيل الطلب</button>
+        <button type="button" class="print-button" id="printWithHeaderBtn" onclick="printWithHeaderFooter()" disabled title="يجب تسجيل الطلب أولاً">🖨️ طباعة مع الرأس والتذييل</button>
+        <button type="button" class="print-button" id="printWithoutHeaderBtn" onclick="printWithoutHeaderFooter()" disabled style="background: #ff6b35;" title="يجب تسجيل الطلب أولاً">🖨️ طباعة بدون رأس وتذييل</button>
+        <a class="register-button" id="viewSheetBtn" href="https://docs.google.com/spreadsheets/d/1hewjE24Lhxvis6yJVKWK_ZRsWzajHMzlXQJ9jT9LiBk/edit?usp=sharing" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center;background:#455a64;">📋 الطلبات السابقة</a>
     </div>
 
     <script>
@@ -1457,7 +1536,20 @@
                 printWithHeader: 'طباعة مع الرأس والتذييل',
                 printWithoutHeader: 'طباعة بدون الرأس والتذييل',
                 printWithHeaderTitle: 'طباعة النموذج مع الرأس والتذييل',
-                printWithoutHeaderTitle: 'طباعة النموذج بدون الرأس والتذييل'
+                printWithoutHeaderTitle: 'طباعة النموذج بدون الرأس والتذييل',
+                registerRequest: 'تسجيل الطلب',
+                viewPrevious: 'الطلبات السابقة',
+                registeredBadge: '✓ مسجّل',
+                mustRegisterFirst: 'يجب تسجيل الطلب أولاً قبل الطباعة',
+                registering: 'جاري تسجيل الطلب...',
+                registerOk: 'تم تسجيل الطلب بنجاح. يمكنك الآن الطباعة.',
+                registerNeedScript: 'يجب ضبط رابط Google Apps Script أولاً (راجع التعليمات).',
+                registerDuplicate: 'الرقم التسلسلي مكرر. تم توليد رقم جديد. أعد التسجيل.',
+                registerError: 'تعذّر تسجيل الطلب. تحقق من الاتصال وإعدادات السكربت.',
+                registerChanged: 'تم تعديل الطلب بعد التسجيل — سجّل مرة أخرى قبل الطباعة.',
+                fetchingSerial: 'جاري جلب رقم تسلسلي فريد...',
+                serialReady: 'تم تجهيز رقم تسلسلي فريد.',
+                sheetUrlMissing: 'أدخل رابط نشر تطبيقات Google Script للمتابعة.'
             },
             en: {
                 pageTitle: 'Disbursement Request - AL ALBAB COMPANY',
@@ -1491,7 +1583,20 @@
                 printWithHeader: 'Print with Header & Footer',
                 printWithoutHeader: 'Print without Header & Footer',
                 printWithHeaderTitle: 'Print form with header and footer',
-                printWithoutHeaderTitle: 'Print form without header and footer'
+                printWithoutHeaderTitle: 'Print form without header and footer',
+                registerRequest: 'Register Request',
+                viewPrevious: 'Previous Requests',
+                registeredBadge: '✓ Registered',
+                mustRegisterFirst: 'Please register the request before printing',
+                registering: 'Registering request...',
+                registerOk: 'Request registered successfully. You can print now.',
+                registerNeedScript: 'Set the Google Apps Script URL first (see setup instructions).',
+                registerDuplicate: 'Serial already exists. A new serial was generated. Register again.',
+                registerError: 'Could not register the request. Check connection and script setup.',
+                registerChanged: 'The request changed after registration — register again before printing.',
+                fetchingSerial: 'Fetching a unique serial...',
+                serialReady: 'Unique serial ready.',
+                sheetUrlMissing: 'Enter the Google Apps Script deployment URL to continue.'
             }
         };
 
@@ -1551,9 +1656,14 @@
             if (printButtons.length >= 2) {
                 printButtons[0].textContent = '🖨️ ' + t.printWithHeader;
                 printButtons[1].textContent = '🖨️ ' + t.printWithoutHeader;
-                if (t.printWithHeaderTitle) printButtons[0].setAttribute('title', t.printWithHeaderTitle);
-                if (t.printWithoutHeaderTitle) printButtons[1].setAttribute('title', t.printWithoutHeaderTitle);
             }
+            const registerBtn = document.getElementById('registerRequestBtn');
+            if (registerBtn) registerBtn.textContent = '📝 ' + t.registerRequest;
+            const viewSheetBtn = document.getElementById('viewSheetBtn');
+            if (viewSheetBtn) viewSheetBtn.textContent = '📋 ' + t.viewPrevious;
+            const badge = document.getElementById('serialRegisteredBadge');
+            if (badge) badge.textContent = t.registeredBadge;
+            updatePrintLockUI();
 
             updateLocalizedSubject();
             updateLocalizedIntro();
@@ -1562,24 +1672,312 @@
             updateTableTotals();
         }
 
-        function generateSerialNumber() {
+        /**
+         * Paste your Google Apps Script Web App URL here after Deploy.
+         * Example: https://script.google.com/macros/s/XXXX/exec
+         * You can also save it via localStorage key: disbursement_scriptUrl
+         */
+        const GOOGLE_SCRIPT_URL = localStorage.getItem('disbursement_scriptUrl') || '';
+        const SHEETS_VIEW_URL = 'https://docs.google.com/spreadsheets/d/1hewjE24Lhxvis6yJVKWK_ZRsWzajHMzlXQJ9jT9LiBk/edit?usp=sharing';
+
+        let requestRegistered = false;
+        let registeredSnapshot = '';
+
+        function tMsg(key) {
+            const t = translations[currentLanguage] || translations.ar;
+            return t[key] || key;
+        }
+
+        function getScriptUrl() {
+            return (localStorage.getItem('disbursement_scriptUrl') || GOOGLE_SCRIPT_URL || '').trim();
+        }
+
+        function setRegisterStatus(message, type) {
+            const el = document.getElementById('registerStatus');
+            if (!el) return;
+            el.className = 'register-status is-visible is-' + (type || 'info');
+            el.innerHTML = message;
+        }
+
+        function clearRegisterStatusSoon(ms) {
+            setTimeout(function() {
+                const el = document.getElementById('registerStatus');
+                if (el) el.classList.remove('is-visible');
+            }, ms || 6000);
+        }
+
+        function updatePrintLockUI() {
+            const t = translations[currentLanguage] || translations.ar;
+            const enabled = requestRegistered === true;
+            const printBtns = [
+                document.getElementById('printWithHeaderBtn'),
+                document.getElementById('printWithoutHeaderBtn')
+            ];
+            printBtns.forEach(function(btn) {
+                if (!btn) return;
+                btn.disabled = !enabled;
+                btn.classList.toggle('is-disabled', !enabled);
+                btn.title = enabled
+                    ? (btn.id === 'printWithHeaderBtn' ? t.printWithHeaderTitle : t.printWithoutHeaderTitle)
+                    : t.mustRegisterFirst;
+            });
+            const badge = document.getElementById('serialRegisteredBadge');
+            if (badge) badge.classList.toggle('is-visible', enabled);
             const serialInput = document.getElementById('serialNumber');
-            if (!serialInput) return;
+            if (serialInput) serialInput.readOnly = true;
+        }
+
+        function buildFormSnapshot() {
+            const data = captureTableData();
+            return JSON.stringify({
+                serial: (document.getElementById('serialNumber') || {}).value || '',
+                date: (document.getElementById('date') || {}).value || '',
+                recipient: (document.getElementById('bankName') || {}).textContent || '',
+                subject: (document.getElementById('subjectType') || {}).textContent || '',
+                intro: data.intro || '',
+                notes: data.notes || '',
+                rows: data.rows || [],
+                sigApplicant: (document.getElementById('sigApplicant') || {}).textContent || '',
+                sigAccounts: (document.getElementById('sigAccounts') || {}).textContent || '',
+                sigManagement: (document.getElementById('sigManagement') || {}).textContent || '',
+                sigDisbursementOrder: (document.getElementById('sigDisbursementOrder') || {}).textContent || ''
+            });
+        }
+
+        function markUnregisteredIfChanged() {
+            if (!requestRegistered) return;
+            if (buildFormSnapshot() !== registeredSnapshot) {
+                requestRegistered = false;
+                registeredSnapshot = '';
+                updatePrintLockUI();
+                setRegisterStatus(tMsg('registerChanged'), 'info');
+            }
+        }
+
+        function callGoogleScript(action, payload) {
+            const base = getScriptUrl();
+            if (!base) {
+                return Promise.reject(new Error('MISSING_SCRIPT_URL'));
+            }
+
+            const body = Object.assign({ action: action }, payload || {});
+            return fetch(base, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(body),
+                redirect: 'follow'
+            }).then(function(res) {
+                return res.text().then(function(text) {
+                    try {
+                        return JSON.parse(text);
+                    } catch (err) {
+                        throw new Error('INVALID_RESPONSE');
+                    }
+                });
+            });
+        }
+
+        function localFallbackSerial() {
             const now = new Date();
             const year = String(now.getFullYear()).slice(-2);
             const month = String(now.getMonth() + 1).padStart(2, '0');
-            const hour = String(now.getHours()).padStart(2, '0');
-            const formattedSerial = year + '-' + month + '-' + hour;
-            serialInput.value = formattedSerial;
+            const day = String(now.getDate()).padStart(2, '0');
+            const seq = String(Math.floor(Math.random() * 900) + 100);
+            return year + '-' + month + '-' + day + '-' + seq;
+        }
+
+        function generateSerialNumber() {
+            const serialInput = document.getElementById('serialNumber');
+            if (!serialInput) return;
+
+            requestRegistered = false;
+            registeredSnapshot = '';
+            updatePrintLockUI();
+
+            if (!getScriptUrl()) {
+                serialInput.value = localFallbackSerial();
+                localStorage.setItem('disbursement_serialNumber', serialInput.value);
+                setRegisterStatus(tMsg('registerNeedScript'), 'error');
+                return;
+            }
+
+            setRegisterStatus(tMsg('fetchingSerial'), 'info');
+            const generateBtn = document.querySelector('.generate-serial-btn');
+            if (generateBtn) generateBtn.disabled = true;
+
+            callGoogleScript('nextSerial')
+                .then(function(result) {
+                    if (result && result.ok && result.serial) {
+                        serialInput.value = result.serial;
+                        localStorage.setItem('disbursement_serialNumber', result.serial);
+                        setRegisterStatus(tMsg('serialReady'), 'ok');
+                        clearRegisterStatusSoon(3500);
+                    } else {
+                        serialInput.value = localFallbackSerial();
+                        setRegisterStatus(tMsg('registerError'), 'error');
+                    }
+                })
+                .catch(function() {
+                    serialInput.value = localFallbackSerial();
+                    setRegisterStatus(tMsg('registerError'), 'error');
+                })
+                .finally(function() {
+                    if (generateBtn) generateBtn.disabled = false;
+                });
+        }
+
+        function collectTotalsObject() {
+            const rows = captureTableData().rows || [];
+            const totals = {};
+            rows.forEach(function(row) {
+                const amount = parseAmount(row.total);
+                if (!amount) return;
+                const currency = getCurrencyLabel(row.currency || '$');
+                totals[currency] = (totals[currency] || 0) + amount;
+            });
+            Object.keys(totals).forEach(function(key) {
+                totals[key] = formatAmount(totals[key]);
+            });
+            return totals;
+        }
+
+        function buildRegisterPayload() {
+            const table = captureTableData();
+            return {
+                serial: (document.getElementById('serialNumber') || {}).value || '',
+                date: formatDisplayDate((document.getElementById('date') || {}).value || '') || ((document.getElementById('date') || {}).value || ''),
+                recipient: ((document.getElementById('bankName') || {}).textContent || '').trim(),
+                subject: ((document.getElementById('subjectType') || {}).textContent || '').trim(),
+                intro: table.intro || '',
+                notes: table.notes || '',
+                items: (table.rows || []).map(function(row) {
+                    return {
+                        desc: row.desc || '',
+                        currency: getCurrencyLabel(row.currency || '$'),
+                        total: row.total || ''
+                    };
+                }),
+                totals: collectTotalsObject(),
+                sigApplicant: ((document.getElementById('sigApplicant') || {}).textContent || '').trim(),
+                sigAccounts: ((document.getElementById('sigAccounts') || {}).textContent || '').trim(),
+                sigManagement: ((document.getElementById('sigManagement') || {}).textContent || '').trim(),
+                sigDisbursementOrder: ((document.getElementById('sigDisbursementOrder') || {}).textContent || '').trim(),
+                language: currentLanguage
+            };
+        }
+
+        function ensureScriptUrlConfigured() {
+            let url = getScriptUrl();
+            if (url) return url;
+            const entered = window.prompt(
+                (currentLanguage === 'en'
+                    ? 'Paste Google Apps Script Web App URL:'
+                    : 'الصق رابط نشر Google Apps Script:')
+            );
+            if (entered && entered.trim()) {
+                url = entered.trim();
+                localStorage.setItem('disbursement_scriptUrl', url);
+                return url;
+            }
+            return '';
+        }
+
+        function registerDisbursementRequest() {
+            if (!ensureScriptUrlConfigured()) {
+                setRegisterStatus(tMsg('sheetUrlMissing'), 'error');
+                return;
+            }
+
+            const serialInput = document.getElementById('serialNumber');
+            if (!serialInput || !serialInput.value.trim()) {
+                generateSerialNumber();
+                setRegisterStatus(tMsg('fetchingSerial'), 'info');
+                return;
+            }
+
+            const registerBtn = document.getElementById('registerRequestBtn');
+            if (registerBtn) registerBtn.disabled = true;
+            setRegisterStatus(tMsg('registering'), 'info');
+
+            const payload = buildRegisterPayload();
+            callGoogleScript('register', { data: payload })
+                .then(function(result) {
+                    if (result && result.ok) {
+                        if (result.serial) {
+                            serialInput.value = result.serial;
+                            localStorage.setItem('disbursement_serialNumber', result.serial);
+                        }
+                        requestRegistered = true;
+                        registeredSnapshot = buildFormSnapshot();
+                        updatePrintLockUI();
+                        setRegisterStatus(
+                            tMsg('registerOk') + ' <a href="' + SHEETS_VIEW_URL + '" target="_blank" rel="noopener">' + tMsg('viewPrevious') + '</a>',
+                            'ok'
+                        );
+                        clearRegisterStatusSoon(8000);
+                        return;
+                    }
+
+                    if (result && result.error === 'DUPLICATE_SERIAL') {
+                        requestRegistered = false;
+                        updatePrintLockUI();
+                        if (result.suggestedSerial) {
+                            serialInput.value = result.suggestedSerial;
+                            localStorage.setItem('disbursement_serialNumber', result.suggestedSerial);
+                        } else {
+                            return generateSerialNumber();
+                        }
+                        setRegisterStatus(tMsg('registerDuplicate'), 'error');
+                        return;
+                    }
+
+                    requestRegistered = false;
+                    updatePrintLockUI();
+                    setRegisterStatus((result && result.message) || tMsg('registerError'), 'error');
+                })
+                .catch(function(err) {
+                    requestRegistered = false;
+                    updatePrintLockUI();
+                    if (err && err.message === 'MISSING_SCRIPT_URL') {
+                        setRegisterStatus(tMsg('registerNeedScript'), 'error');
+                    } else {
+                        setRegisterStatus(tMsg('registerError'), 'error');
+                    }
+                })
+                .finally(function() {
+                    if (registerBtn) registerBtn.disabled = false;
+                });
+        }
+
+        function assertRegisteredOrWarn() {
+            if (requestRegistered && buildFormSnapshot() === registeredSnapshot) return true;
+            requestRegistered = false;
+            updatePrintLockUI();
+            setRegisterStatus(tMsg('mustRegisterFirst'), 'error');
+            return false;
         }
 
         const serialInput = document.getElementById('serialNumber');
         if (serialInput) {
             generateSerialNumber();
-            serialInput.addEventListener('blur', function() {
+            serialInput.addEventListener('input', function() {
                 localStorage.setItem('disbursement_serialNumber', this.value);
+                markUnregisteredIfChanged();
             });
         }
+
+        document.addEventListener('input', function(e) {
+            if (!e.target) return;
+            if (e.target.closest && e.target.closest('.page-container')) {
+                markUnregisteredIfChanged();
+            }
+        });
+        document.addEventListener('blur', function(e) {
+            if (!e.target) return;
+            if (e.target.closest && e.target.closest('.page-container')) {
+                markUnregisteredIfChanged();
+            }
+        }, true);
 
         initRequestTable();
 
@@ -1631,17 +2029,27 @@
         }
 
         window.addEventListener('beforeprint', function() {
+            const allowed = requestRegistered && buildFormSnapshot() === registeredSnapshot;
+            document.body.classList.toggle('print-blocked', !allowed);
+            if (!allowed) {
+                requestRegistered = false;
+                updatePrintLockUI();
+                setRegisterStatus(tMsg('mustRegisterFirst'), 'error');
+                return;
+            }
             syncPrintDateDisplay();
             prepareTableForPrint();
             compactPrintFields();
         });
         window.addEventListener('afterprint', function() {
+            document.body.classList.remove('print-blocked');
             restoreTableAfterPrint();
             resetPrintScale();
             restoreHeaderFooter();
         });
 
         function printWithHeaderFooter() {
+            if (!assertRegisteredOrWarn()) return;
             const pageContainer = document.querySelector('.page-container');
             if (pageContainer) {
                 pageContainer.classList.remove('no-header-footer');
@@ -1650,6 +2058,7 @@
         }
 
         function printWithoutHeaderFooter() {
+            if (!assertRegisteredOrWarn()) return;
             const pageContainer = document.querySelector('.page-container');
             if (pageContainer) {
                 pageContainer.classList.add('no-header-footer');
@@ -1661,6 +2070,8 @@
             const pageContainer = document.querySelector('.page-container');
             if (pageContainer) pageContainer.classList.remove('no-header-footer');
         }
+
+        updatePrintLockUI();
     </script>
 </body>
 </html>
