@@ -11,7 +11,7 @@
 window.ACCESS_PASSWORDS = [
   {
     name: 'الإدارة',
-    password: 'AlbabAdmin2026'
+    password: '2011'
   },
   {
     name: 'الحسابات',
