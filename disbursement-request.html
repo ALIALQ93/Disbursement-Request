@@ -1673,11 +1673,10 @@
         }
 
         /**
-         * Paste your Google Apps Script Web App URL here after Deploy.
-         * Example: https://script.google.com/macros/s/XXXX/exec
-         * You can also save it via localStorage key: disbursement_scriptUrl
+         * Google Apps Script Web App URL (Deploy → Web app).
+         * You can override via localStorage key: disbursement_scriptUrl
          */
-        const GOOGLE_SCRIPT_URL = localStorage.getItem('disbursement_scriptUrl') || '';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrAxQejXvlGBmAoJ-IRWZnOakLLkzamINTeB4zO6MxNp1ARNWycWmbVFE61M34OsmrQw/exec';
         const SHEETS_VIEW_URL = 'https://docs.google.com/spreadsheets/d/1hewjE24Lhxvis6yJVKWK_ZRsWzajHMzlXQJ9jT9LiBk/edit?usp=sharing';
 
         let requestRegistered = false;
